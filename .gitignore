@@ -3,3 +3,7 @@
 ################################################################################
 
 /HandDiagnostics/.vs
+/HandDiagnostics/HandDiagnostics/bin
+/HandDiagnostics/HandDiagnostics/obj/Debug
+/HandDiagnostics/HandDiagnostics/Properties
+/HandDiagnostics/packages

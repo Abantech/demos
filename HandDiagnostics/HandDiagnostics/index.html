@@ -1,0 +1,612 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="lib/scripts/three.min.js"></script>
+    <script src="lib/scripts/leap-0.6.4.js"></script>
+    <script src="lib/scripts/leap-plugins-0.1.12.min.js"></script>
+    <style>
+        body {
+            margin: 10px;
+            font-family: Helvetica;
+        }
+
+        canvas.leap-boneHand {
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+
+        th, td {
+            border: 1px solid #aaa;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        td, th {
+            vertical-align: top;
+            padding: 3px;
+            font-size: small;
+        }
+
+        th {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        function toggleTable(table, visible) {
+            document.getElementById(table).style.display = visible ? 'inline-block' : 'none';
+        }
+    </script>
+
+    <div id="left" style="float: left; width: 20%;">
+        <h3>Left Hand</h3>
+        <div>
+            <input type="checkbox" checked="checked" onchange="toggleTable('leftThumb', this.checked)" style="display: inline-block; margin-right: 10px" />
+            <div style="display: inline-block;">Thumb</div>
+        </div>
+        <table id="leftThumb">
+            <tr>
+                <th>Joint</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Current</th>
+            </tr>
+            <tr>
+                <td>Knucle</td>
+                <td><span id="lefthand001min"></span></td>
+                <td><span id="lefthand001max"></span></td>
+                <td><span id="lefthand001current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>PIP</td>
+                <td><span id="lefthand012min"></span></td>
+                <td><span id="lefthand012max"></span></td>
+                <td><span id="lefthand012current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>DIP</td>
+                <td><span id="lefthand023min"></span></td>
+                <td><span id="lefthand023max"></span></td>
+                <td><span id="lefthand023current" class="current"></span></td>
+            </tr>
+        </table><br />
+
+        <div>
+            <input type="checkbox" checked="checked" onchange="toggleTable('leftIndex', this.checked)" style="display: inline-block; margin-right: 10px" />
+            <div style="display: inline-block;">Index</div>
+        </div>
+        <table id="leftIndex">
+            <tr>
+                <th>Joint</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Current</th>
+            </tr>
+            <tr>
+                <td>Knucle</td>
+                <td><span id="lefthand101min"></span></td>
+                <td><span id="lefthand101max"></span></td>
+                <td><span id="lefthand101current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>PIP</td>
+                <td><span id="lefthand112min"></span></td>
+                <td><span id="lefthand112max"></span></td>
+                <td><span id="lefthand112current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>DIP</td>
+                <td><span id="lefthand123min"></span></td>
+                <td><span id="lefthand123max"></span></td>
+                <td><span id="lefthand123current" class="current"></span></td>
+            </tr>
+        </table><br />
+
+        <div>
+            <input type="checkbox" checked="checked" onchange="toggleTable('leftMiddle', this.checked)" style="display: inline-block; margin-right: 10px" />
+            <div style="display: inline-block;">Middle</div>
+        </div>
+        <table id="leftMiddle">
+            <tr>
+                <th>Joint</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Current</th>
+            </tr>
+            <tr>
+                <td>Knucle</td>
+                <td><span id="lefthand201min"></span></td>
+                <td><span id="lefthand201max"></span></td>
+                <td><span id="lefthand201current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>PIP</td>
+                <td><span id="lefthand212min"></span></td>
+                <td><span id="lefthand212max"></span></td>
+                <td><span id="lefthand212current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>DIP</td>
+                <td><span id="lefthand223min"></span></td>
+                <td><span id="lefthand223max"></span></td>
+                <td><span id="lefthand223current" class="current"></span></td>
+            </tr>
+        </table><br />
+
+        <div>
+            <input type="checkbox" checked="checked" onchange="toggleTable('leftRing', this.checked)" style="display: inline-block; margin-right: 10px" />
+            <div style="display: inline-block;">Ring</div>
+        </div>
+        <table id="leftRing">
+            <tr>
+                <th>Joint</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Current</th>
+            </tr>
+            <tr>
+                <td>Knucle</td>
+                <td><span id="lefthand301min"></span></td>
+                <td><span id="lefthand301max"></span></td>
+                <td><span id="lefthand301current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>PIP</td>
+                <td><span id="lefthand312min"></span></td>
+                <td><span id="lefthand312max"></span></td>
+                <td><span id="lefthand312current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>DIP</td>
+                <td><span id="lefthand323min"></span></td>
+                <td><span id="lefthand323max"></span></td>
+                <td><span id="lefthand323current" class="current"></span></td>
+            </tr>
+        </table><br />
+
+        <div>
+            <input type="checkbox" checked="checked" onchange="toggleTable('leftPinky', this.checked)" style="display: inline-block; margin-right: 10px" />
+            <div style="display: inline-block;">Pinky</div>
+        </div>
+        <table id="leftPinky">
+            <tr>
+                <th>Joint</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Current</th>
+            </tr>
+            <tr>
+                <td>Knucle</td>
+                <td><span id="lefthand401min"></span></td>
+                <td><span id="lefthand401max"></span></td>
+                <td><span id="lefthand401current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>PIP</td>
+                <td><span id="lefthand412min"></span></td>
+                <td><span id="lefthand412max"></span></td>
+                <td><span id="lefthand412current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>DIP</td>
+                <td><span id="lefthand423min"></span></td>
+                <td><span id="lefthand423max"></span></td>
+                <td><span id="lefthand423current" class="current"></span></td>
+            </tr>
+        </table><br />
+    </div>
+    <br />
+    <div id="right" style="float: right; width: 20%;">
+        <h3>Right Hand</h3>
+        <div>
+            <input type="checkbox" checked="checked" onchange="toggleTable('rightThumb', this.checked)" style="display: inline-block; margin-right: 10px" />
+            <div style="display: inline-block;">Thumb</div>
+        </div>
+        <table id="rightThumb">
+            <tr>
+                <th>Joint</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Current</th>
+            </tr>
+            <tr>
+                <td>Knucle</td>
+                <td><span id="righthand001min"></span></td>
+                <td><span id="righthand001max"></span></td>
+                <td><span id="righthand001current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>PIP</td>
+                <td><span id="righthand012min"></span></td>
+                <td><span id="righthand012max"></span></td>
+                <td><span id="righthand012current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>DIP</td>
+                <td><span id="righthand023min"></span></td>
+                <td><span id="righthand023max"></span></td>
+                <td><span id="righthand023current" class="current"></span></td>
+            </tr>
+        </table><br />
+
+        <div>
+            <input type="checkbox" checked="checked" onchange="toggleTable('rightIndex', this.checked)" style="display: inline-block; margin-right: 10px" />
+            <div style="display: inline-block;">Index</div>
+        </div>
+        <table id="rightIndex">
+            <tr>
+                <th>Joint</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Current</th>
+            </tr>
+            <tr>
+                <td>Knucle</td>
+                <td><span id="righthand101min"></span></td>
+                <td><span id="righthand101max"></span></td>
+                <td><span id="righthand101current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>PIP</td>
+                <td><span id="righthand112min"></span></td>
+                <td><span id="righthand112max"></span></td>
+                <td><span id="righthand112current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>DIP</td>
+                <td><span id="righthand123min"></span></td>
+                <td><span id="righthand123max"></span></td>
+                <td><span id="righthand123current" class="current"></span></td>
+            </tr>
+        </table><br />
+
+        <div>
+            <input type="checkbox" checked="checked" onchange="toggleTable('rightMiddle', this.checked)" style="display: inline-block; margin-right: 10px" />
+            <div style="display: inline-block;">Middle</div>
+        </div>
+        <table id="rightMiddle">
+            <tr>
+                <th>Joint</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Current</th>
+            </tr>
+            <tr>
+                <td>Knucle</td>
+                <td><span id="righthand201min"></span></td>
+                <td><span id="righthand201max"></span></td>
+                <td><span id="righthand201current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>PIP</td>
+                <td><span id="righthand212min"></span></td>
+                <td><span id="righthand212max"></span></td>
+                <td><span id="righthand212current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>DIP</td>
+                <td><span id="righthand223min"></span></td>
+                <td><span id="righthand223max"></span></td>
+                <td><span id="righthand223current" class="current"></span></td>
+            </tr>
+        </table><br />
+
+        <div>
+            <input type="checkbox" checked="checked" onchange="toggleTable('rightRing', this.checked)" style="display: inline-block; margin-right: 10px" />
+            <div style="display: inline-block;">Ring</div>
+        </div>
+        <table id="rightRing">
+            <tr>
+                <th>Joint</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Current</th>
+            </tr>
+            <tr>
+                <td>Knucle</td>
+                <td><span id="righthand301min"></span></td>
+                <td><span id="righthand301max"></span></td>
+                <td><span id="righthand301current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>PIP</td>
+                <td><span id="righthand312min"></span></td>
+                <td><span id="righthand312max"></span></td>
+                <td><span id="righthand312current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>DIP</td>
+                <td><span id="righthand323min"></span></td>
+                <td><span id="righthand323max"></span></td>
+                <td><span id="righthand323current" class="current"></span></td>
+            </tr>
+        </table><br />
+
+        <div>
+            <input type="checkbox" checked="checked" onchange="toggleTable('rightPinky', this.checked)" style="display: inline-block; margin-right: 10px" />
+            <div style="display: inline-block;">Pinky</div>
+        </div>
+        <table id="rightPinky">
+            <tr>
+                <th>Joint</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Current</th>
+            </tr>
+            <tr>
+                <td>Knucle</td>
+                <td><span id="righthand401min"></span></td>
+                <td><span id="righthand401max"></span></td>
+                <td><span id="righthand401current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>PIP</td>
+                <td><span id="righthand412min"></span></td>
+                <td><span id="righthand412max"></span></td>
+                <td><span id="righthand412current" class="current"></span></td>
+            </tr>
+            <tr>
+                <td>DIP</td>
+                <td><span id="righthand423min"></span></td>
+                <td><span id="righthand423max"></span></td>
+                <td><span id="righthand423current" class="current"></span></td>
+            </tr>
+        </table><br />
+    </div>
+
+    <div id="renderer" style="display: inline-block; width: 60%;"></div>
+
+    <script>
+        var maxMinStorageSize = 50;
+        var leftHandMinimums = [
+            [[], [], []],
+            [[], [], []],
+            [[], [], []],
+            [[], [], []],
+            [[], [], []]
+        ];
+        var leftHandMaximums = [
+            [[], [], []],
+            [[], [], []],
+            [[], [], []],
+            [[], [], []],
+            [[], [], []]
+        ];
+        var rightHandMinimums = [
+            [[], [], []],
+            [[], [], []],
+            [[], [], []],
+            [[], [], []],
+            [[], [], []]
+        ];
+        var rightHandMaximums = [
+            [[], [], []],
+            [[], [], []],
+            [[], [], []],
+            [[], [], []],
+            [[], [], []]
+        ];
+
+        // Leap settings
+        var port = 6437;
+        var host = '127.0.0.1';
+
+        // Decimal Accuracy
+        var accuracy = 1;
+
+        var baseBoneRotation = (new THREE.Quaternion).setFromEuler(new THREE.Euler(0, 0, Math.PI / 2));
+        var armMeshes = [];
+        var boneMeshes = [];
+
+        var stats, renderer, scene, camera, controls;
+
+        var rendererElement = document.getElementById('renderer');
+
+        Leap.loop({
+            background: true,
+            optimizeHMD: false,
+            host: host,
+            port: port,
+        }, leapAnimate)
+            .use("transform", {
+                position: new THREE.Vector3(0, -300, -100)
+            })
+            .use('boneHand', {
+                targetEl: document.body,
+                arm: false,
+                opacity: 0.7
+        }).connect();
+
+        init();
+
+        function init() {
+            // Set up scene
+
+            var scene = Leap.loopController.plugins.boneHand.scene;
+            var camera = Leap.loopController.plugins.boneHand.camera;
+            var renderer = Leap.loopController.plugins.boneHand.renderer;
+
+            var plane = new THREE.Mesh(
+              new THREE.PlaneGeometry(80, 80),
+              new THREE.MeshPhongMaterial({ wireframe: false })
+            );
+
+            camera.lookAt(plane.position);
+
+            Leap.loopController.on('handFound', function (hand) {
+                document.querySelector('canvas').style.display = 'block';
+            }).on('handLost', function (hand) {
+                if (Leap.loopController.frame(0).hands.length === 0) {
+                    document.querySelector('canvas').style.display = 'none';
+                }
+            });
+
+        }
+
+        function addMesh(meshes) {
+
+            var geometry = new THREE.BoxGeometry(1, 1, 1);
+            var material = new THREE.MeshNormalMaterial();
+            var mesh = new THREE.Mesh(geometry, material);
+            meshes.push(mesh);
+
+            return mesh;
+
+        }
+
+        function updateMesh(bone, mesh) {
+
+            mesh.position.fromArray(bone.center());
+            mesh.setRotationFromMatrix((new THREE.Matrix4).fromArray(bone.matrix()));
+            mesh.quaternion.multiply(baseBoneRotation);
+            mesh.scale.set(bone.width, bone.width, bone.length);
+
+            scene.add(mesh);
+
+        }
+
+        function leapAnimate(frame) {
+
+            //var countBones = 0;
+            //var countArms = 0;
+
+            //armMeshes.forEach(function (item) { scene.remove(item) });
+            //boneMeshes.forEach(function (item) { scene.remove(item) });
+
+            //for (var hand of frame.hands) {
+
+            //    for (var finger of hand.fingers) {
+
+            //        for (var bone of finger.bones) {
+
+            //            if (countBones++ === 0) { continue; }
+
+            //            var boneMesh = boneMeshes[countBones] || addMesh(boneMeshes);
+            //            updateMesh(bone, boneMesh);
+
+            //        }
+
+            //    }
+
+            //    var arm = hand.arm;
+            //    var armMesh = armMeshes[countArms++] || addMesh(armMeshes);
+            //    updateMesh(arm, armMesh);
+            //    armMesh.scale.set(arm.width / 4, arm.width / 2, arm.length);
+            //}
+
+            CalculateAndDisplayAnglesForHands(frame.hands);
+
+            //renderer.render(scene, camera);
+        }
+
+        function radToDegrees(rad) {
+            return (rad * 180) / Math.PI;
+        }
+
+        function CalculateAndDisplayAnglesForHands(hands) {
+            if (hands.length === 0) {
+                ClearHandElements('left');
+                ClearHandElements('right');
+            }
+
+            if (hands.length === 1) {
+                var handToClear = hands[0].type ? 'right' : 'left';
+                ClearHandElements(handToClear);
+                CalculateAndDisplayAngles(hands[0]);
+            }
+
+            if (hands.length === 2) {
+                CalculateAndDisplayAngles(hands[0]);
+                CalculateAndDisplayAngles(hands[1]);
+            }
+        }
+
+        function CalculateAndDisplayAngles(hand) {
+            for (var i = 0; i < hand.fingers.length; i++) {
+
+                // Get finger
+                var finger = hand.fingers[i];
+
+                for (var j = 0; j < finger.bones.length - 1; j++) {
+                    var bone1 = (new THREE.Vector3).fromArray(finger.bones[j].basis[2]);
+                    var bone2 = (new THREE.Vector3).fromArray(finger.bones[j + 1].basis[2]);
+                    var angle = radToDegrees(bone1.angleTo(bone2));
+
+                    RegisterMinimumsAndMaximums(hand.type, i, j, angle);
+
+                    document.getElementById(hand.type + 'hand' + i + j + (j + 1) + 'current').innerHTML = angle.toFixed(accuracy);
+                }
+            }
+        }
+
+        function RegisterMinimumsAndMaximums(side, finger, jointNumber, angle) {
+            // Handle minimums
+            var minimums = side === "right" ? rightHandMinimums[finger][jointNumber] : leftHandMinimums[finger][jointNumber];
+
+            if (minimums.length < maxMinStorageSize) {
+                minimums[minimums.length] = angle;
+
+                var sum = minimums.reduce(function (a, b) { return a + b; });
+                var avg = sum / minimums.length;
+
+                document.getElementById(side + 'hand' + finger + jointNumber + (jointNumber + 1) + 'min').innerHTML = avg.toFixed(accuracy);
+            }
+            else {
+                minimums.sort(function (a, b) {
+                    return b - a;
+                });
+
+                if (minimums[0] > angle) {
+                    minimums[0] = angle;
+
+                    var sum = minimums.reduce(function (a, b) { return a + b; });
+                    var avg = sum / minimums.length;
+
+                    document.getElementById(side + 'hand' + finger + jointNumber + (jointNumber + 1) + 'min').innerHTML = avg.toFixed(accuracy);
+                }
+            }
+
+            // Handle maximums
+            var maximums = side === "right" ? rightHandMaximums[finger][jointNumber] : leftHandMaximums[finger][jointNumber];
+
+            if (maximums.length < maxMinStorageSize) {
+                maximums[maximums.length] = angle;
+
+                var sum = maximums.reduce(function (a, b) { return a + b; });
+                var avg = sum / maximums.length;
+
+                document.getElementById(side + 'hand' + finger + jointNumber + (jointNumber + 1) + 'max').innerHTML = avg.toFixed(accuracy);
+            }
+            else {
+                maximums.sort();
+
+                if (maximums[0] < angle) {
+                    maximums[0] = angle;
+
+                    var sum = maximums.reduce(function (a, b) { return a + b; });
+                    var avg = sum / maximums.length;
+
+                    document.getElementById(side + 'hand' + finger + jointNumber + (jointNumber + 1) + 'max').innerHTML = avg.toFixed(accuracy);
+                }
+            }
+        }
+
+        function ClearHandElements(side) {
+            var spans = [].slice.call(document.getElementById(side).getElementsByTagName('span')).filter(function (span) {
+                return span.className === 'current';
+            });
+
+            for (var span of spans) {
+                span.innerText = '';
+            }
+        }
+    </script>
+</body>
+</html>
