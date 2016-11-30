@@ -873,6 +873,34 @@ footer a:hover {
   }
 }
 
+/* custom added styles */
+a.roundedBlueButton {
+	display: block;
+    border-radius: 6px;
+    background: #317df7;
+    width: 138px;
+    padding-right: 10px;
+    text-decoration: none;
+    font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, 	Arial, serif;
+    color: #fff;
+    font-size: 18px;
+}
+
+td.roundedBlueButton {
+    font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, 	Arial, serif;
+    font-size: 18px;
+    color: #fff;
+}
+
+td.roundedBlueButton small {
+  font-size: 11px;
+}
+td.facebook {
+   content:url(http://www.freeiconspng.com/uploads/app-style-transparent-png-facebook-5.png);
+   width: 100%;
+   height: 100%;
+}
+
 /* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
 @media only screen and (min-width: 480px) and (max-width: 767px) { }
 
