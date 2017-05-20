@@ -14,7 +14,7 @@ public class KinectJointPositionMapper : IBodyPartPositionProvider
         JointCollection = new Dictionary<JointType, GameObject>(); 
     }
 
-    public Vector3 Chest 
+    public Vector3 Chest  
     {
         get 
         {
