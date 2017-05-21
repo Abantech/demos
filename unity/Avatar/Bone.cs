@@ -5,8 +5,7 @@ internal class Bone
     private GameObject joint1;
     private GameObject joint2;
     private GameObject bone;
-
-    private float thickness = .05f;
+    private float thickness = .05f; 
 
     public static Bone Create(GameObject joint1, GameObject joint2)
     {

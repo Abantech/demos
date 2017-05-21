@@ -2,14 +2,15 @@
 using UnityEngine;
 using Windows.Kinect;
 
-class UnityBody
+//Formerly UnityBody
+class KinectAutoStickMan : IJointPositionUpdater<Windows.Kinect.Joint>
 {
-    Dictionary<JointType, GameObject> jointCollection = new Dictionary<JointType, GameObject>();
+    public Dictionary<JointType, GameObject> jointCollection = new Dictionary<JointType, GameObject>();
     List<Bone> bones;
     private float jointSize = .1f;
     public ulong bodyID;
 
-    public UnityBody(Body body)
+    public KinectAutoStickMan(Body body)
     {
         bodyID = body.TrackingId;
         Color meshColor = GetNextColor();
@@ -32,7 +33,20 @@ class UnityBody
         CreateBones();
     }
 
-    internal void UpdateJoints(Dictionary<JointType, Windows.Kinect.Joint> joints)
+    public void UpdateJoints(IEnumerable<Windows.Kinect.Joint> joints)
+    {
+        foreach (var joint in joints)
+        {
+            jointCollection[joint.JointType].transform.position = new Vector3(joint.Position.X, joint.Position.Y + 1, joint.Position.Z);
+        }
+
+        foreach (var bone in bones)
+        {
+            bone.Update();
+        }
+    }
+
+    public void UpdateJoints(Dictionary<JointType, Windows.Kinect.Joint> joints)
     {
         foreach (var joint in joints)
         {
