@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 internal class Bone
 {
-    private GameObject joint1;
-    private GameObject joint2;
-    private GameObject bone;
+    private GameObject boneGameObject;
+    Func<Vector3> StartJointPositionGetter;
+    Func<Vector3> EndJointPositionGetter;
 
     private float thickness = .05f;
 
@@ -13,41 +14,53 @@ internal class Bone
         return new Bone(joint1, joint2);
     }
 
-    private Bone(GameObject joint1, GameObject joint2)
+    public static Bone AssociateBoneJoints(GameObject bone, Func<Vector3> startJointPositionGetter, Func<Vector3> endJointPositionGetter)
     {
-        bone = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        bone.transform.localScale = new Vector3(thickness, thickness, thickness);
-        bone.name = joint1.name + "-" + joint2.name + "Bone";
-        this.joint1 = joint1;
-        this.joint2 = joint2;
+        return new Bone(bone, startJointPositionGetter, endJointPositionGetter);
     }
 
-    public void Update()
+    private Bone(GameObject joint1, GameObject joint2)
     {
-        float length = GetBoneLength(joint1, joint2) / 2;
+        boneGameObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        boneGameObject.transform.localScale = new Vector3(thickness, thickness, thickness);
+        boneGameObject.name = joint1.name + "-" + joint2.name + "Bone";
+        StartJointPositionGetter = () => { return joint1.transform.position; };
+        EndJointPositionGetter = () => { return joint2.transform.position; };
+    }
+
+    private Bone(GameObject bone, Func<Vector3> startJointPositionGetter, Func<Vector3> endJointPositionGetter)
+    {
+        boneGameObject = bone;
+        StartJointPositionGetter = startJointPositionGetter;
+        EndJointPositionGetter = endJointPositionGetter;
+    }
+
+    public static void Update(Bone bone)
+    {
+        float length = GetBoneLength(bone.StartJointPositionGetter(), bone.EndJointPositionGetter()) / 2;
 
         // Scale bone along local y to the length between two points
-        bone.transform.localScale = new Vector3(bone.transform.localScale.x, length, bone.transform.localScale.z);
+        bone.GetBoneGameObject().transform.localScale = new Vector3(bone.GetBoneGameObject().transform.localScale.x, length, bone.GetBoneGameObject().transform.localScale.z);
 
         // Set position to midpoint
-        bone.transform.position = GetBoneMidpoint(joint1, joint2);
+        bone.GetBoneGameObject().transform.position = GetBoneMidpoint(bone.StartJointPositionGetter(), bone.EndJointPositionGetter());
 
         // Set "up" vector to match line between two points
-        bone.transform.up = joint2.transform.position - joint1.transform.position;
+        bone.GetBoneGameObject().transform.up = bone.EndJointPositionGetter() - bone.StartJointPositionGetter();
     }
     
     public GameObject GetBoneGameObject()
     {
-        return bone;
+        return boneGameObject;
     }
 
-    private float GetBoneLength(GameObject joint1, GameObject joint2)
+    private static float GetBoneLength(Vector3 startJointPosition, Vector3 endJointPosition)
     {
-        return Vector3.Distance(joint1.transform.position, joint2.transform.position);
+        return Vector3.Distance(startJointPosition, endJointPosition);
     }
 
-    private Vector3 GetBoneMidpoint(GameObject joint1, GameObject joint2)
+    private static Vector3 GetBoneMidpoint(Vector3 startJointPosition, Vector3 endJointPosition)
     {
-        return Vector3.Lerp(joint1.transform.position, joint2.transform.position, 0.5f);
+        return Vector3.Lerp(startJointPosition, endJointPosition, 0.5f);
     }
 }

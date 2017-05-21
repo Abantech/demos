@@ -121,6 +121,18 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
             throw new NotImplementedException();
         }
     }
+    public override Vector3 SpineShoulderPosition
+    {
+        get
+        {
+            return GetJointPosition(JointType.SpineShoulder);
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public override Vector3 SpinePosition
     {
@@ -189,6 +201,32 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         get
         {
             return GetJointPosition(JointType.WristRight);
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public override Vector3 RightArmHandTipPosition
+    {
+        get
+        {
+            return GetJointPosition(JointType.HandTipRight);
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public override Vector3 RightArmHandThumbPosition
+    {
+        get
+        {
+            return GetJointPosition(JointType.ThumbRight);
         }
 
         set
@@ -289,6 +327,32 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         get
         {
             return GetJointPosition(JointType.WristLeft);
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public override Vector3 LeftArmHandTipPosition
+    {
+        get
+        {
+            return GetJointPosition(JointType.HandTipLeft);
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public override Vector3 LeftArmHandThumbPosition
+    {
+        get
+        {
+            return GetJointPosition(JointType.ThumbLeft);
         }
 
         set

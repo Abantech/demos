@@ -15,7 +15,7 @@ public class AvatarDirectMapping : HumanoidMapping
     public GameObject RightArmShoulder;
     public GameObject RightArmUpper;
     public GameObject RightArmLower;
-    public GameObject RightArmWrist;
+    public GameObject RightArmHand;
 
     public GameObject RightLegUpper;
     public GameObject RightLegLower;
@@ -25,15 +25,18 @@ public class AvatarDirectMapping : HumanoidMapping
     public GameObject LeftArmShoulder;
     public GameObject LeftArmUpper;
     public GameObject LeftArmLower;
-    public GameObject LeftArmWrist;
+    public GameObject LeftArmHand;
 
     public GameObject LeftLegUpper;
     public GameObject LeftLegLower;
     public GameObject LeftLegFoot;
     public GameObject LeftLegToes;
 
+    List<Bone> BoneList = new List<Bone>();
+
     private void Start()
     {
+        
     }
 
     private void Update()
@@ -47,7 +50,6 @@ public class AvatarDirectMapping : HumanoidMapping
             //     RightArmShoulder == null && 
             RightArmUpper == null &&
             RightArmLower == null &&
-            RightArmWrist == null &&
             RightLegUpper == null &&
             RightLegLower == null &&
             RightLegFoot == null &&
@@ -55,14 +57,79 @@ public class AvatarDirectMapping : HumanoidMapping
             //     LeftArmShoulder == null && 
             LeftArmUpper == null &&
             LeftArmLower == null &&
-            LeftArmWrist == null &&
             LeftLegUpper == null &&
             LeftLegLower == null &&
             LeftLegFoot == null 
             //     LeftLegToes == null
             );
+
+        if (BoneList.Count == 0)
+        {
+            BoneList.Add(Bone.AssociateBoneJoints(Head, () => HeadPosition, () => NeckPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(Neck, () => NeckPosition, () => SpineShoulderPosition));
+
+            BoneList.Add(Bone.AssociateBoneJoints(Chest, () => NeckPosition, () => ChestPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(Spine, () => ChestPosition, () => (HipsPosition + SpinePosition) / 2));
+            BoneList.Add(Bone.AssociateBoneJoints(Hips, () => (HipsPosition + SpinePosition) / 2, () => (LeftLegUpperPosition + RightLegUpperPosition) / 2));
+
+            BoneList.Add(Bone.AssociateBoneJoints(RightArmShoulder, () => SpineShoulderPosition, () => RightArmShoulderPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(RightArmUpper, () => RightArmShoulderPosition, () => RightArmLowerPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(RightArmLower, () => RightArmLowerPosition, () => RightArmWristPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(RightArmHand, () => RightArmWristPosition, () => RightArmHandTipPosition));
+
+            BoneList.Add(Bone.AssociateBoneJoints(RightLegUpper, () => HipsPosition, () => RightLegUpperPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(RightLegLower, () => HipsPosition, () => RightLegLowerPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(RightLegFoot, () => RightLegLowerPosition, () => RightLegFootPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(RightLegToes, () => RightLegFootPosition, () => RightLegToesPosition));
+
+            BoneList.Add(Bone.AssociateBoneJoints(LeftArmShoulder, () => SpineShoulderPosition, () => LeftArmShoulderPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(LeftArmUpper, () => LeftArmShoulderPosition, () => LeftArmLowerPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(LeftArmLower, () => LeftArmLowerPosition, () => LeftArmWristPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(LeftArmHand, () => LeftArmWristPosition, () => LeftArmHandTipPosition));
+
+            BoneList.Add(Bone.AssociateBoneJoints(LeftLegUpper, () => HipsPosition, () => LeftLegUpperPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(LeftLegLower, () => HipsPosition, () => LeftLegLowerPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(LeftLegFoot, () => LeftLegLowerPosition, () => LeftLegFootPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(LeftLegToes, () => LeftLegFootPosition, () => LeftLegToesPosition));
+        }
+
+        //BoneList.ForEach(x => Bone.Update(x));
+        foreach(var bone in BoneList)
+        {
+            Bone.Update(bone);
+        }
     }
 
+    public override Vector3 ChestPosition { get; set; }
+    public override Vector3 HeadPosition { get; set; }
+    public override Vector3 SpineShoulderPosition { get; set; }
+    public override Vector3 HipsPosition { get; set; }
+    public override Vector3 LeftArmLowerPosition { get; set; }
+    public override Vector3 LeftArmShoulderPosition { get; set; }
+    public override Vector3 LeftArmUpperPosition { get; set; }
+    public override Vector3 LeftArmWristPosition { get; set; }
+    public override Vector3 LeftArmHandTipPosition { get; set; }
+    public override Vector3 LeftArmHandThumbPosition { get; set; }
+
+    public override Vector3 LeftLegFootPosition { get; set; }
+    public override Vector3 LeftLegLowerPosition { get; set; }
+    public override Vector3 LeftLegToesPosition { get; set; }
+    public override Vector3 LeftLegUpperPosition { get; set; }
+    public override Vector3 NeckPosition { get; set; }
+    public override Vector3 RightArmLowerPosition { get; set; }
+    public override Vector3 RightArmShoulderPosition { get; set; }
+    public override Vector3 RightArmUpperPosition { get; set; }
+    public override Vector3 RightArmWristPosition { get; set; }
+
+    public override Vector3 RightArmHandTipPosition { get; set; }
+    public override Vector3 RightArmHandThumbPosition { get; set; }
+
+    public override Vector3 RightLegFootPosition { get; set; }
+    public override Vector3 RightLegLowerPosition { get; set; }
+    public override Vector3 RightLegToesPosition { get; set; }
+    public override Vector3 RightLegUpperPosition { get; set; }
+    public override Vector3 SpinePosition { get; set; }
+    /*
     public override Vector3 ChestPosition
     {
         get
@@ -335,4 +402,5 @@ public class AvatarDirectMapping : HumanoidMapping
             Spine.transform.position = value;
         }
     }
+    */
 }

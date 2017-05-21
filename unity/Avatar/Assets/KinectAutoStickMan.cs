@@ -42,7 +42,7 @@ class KinectAutoStickMan : IJointPositionUpdater<Windows.Kinect.Joint>
 
         foreach (var bone in bones)
         {
-            bone.Update();
+            Bone.Update(bone);
         }
     }
 
@@ -55,7 +55,7 @@ class KinectAutoStickMan : IJointPositionUpdater<Windows.Kinect.Joint>
 
         foreach (var bone in bones)
         {
-            bone.Update();
+            Bone.Update(bone);
         }
     }
 
