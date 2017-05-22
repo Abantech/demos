@@ -59,9 +59,10 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
 
     private Vector3 GetJointPosition(JointType jointType)
     {
+        
         Vector3 derivedVector = Vector3.zero;
 
-        if (trackedBody.Joints.ContainsKey(jointType))
+        if (hasTrackedBody && trackedBody.Joints.ContainsKey(jointType))
         {
             derivedVector = new Vector3(trackedBody.Joints[jointType].Position.X, trackedBody.Joints[jointType].Position.Y, trackedBody.Joints[jointType].Position.Z);
             if (!LastKnownJointPositions.ContainsKey(jointType))
