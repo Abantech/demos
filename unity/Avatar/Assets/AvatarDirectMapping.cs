@@ -70,27 +70,27 @@ public class AvatarDirectMapping : HumanoidMapping
 
             BoneList.Add(Bone.AssociateBoneJoints(Chest, () => NeckPosition, () => ChestPosition));
             BoneList.Add(Bone.AssociateBoneJoints(Spine, () => ChestPosition, () => (HipsPosition + SpinePosition) / 2));
-            BoneList.Add(Bone.AssociateBoneJoints(Hips, () => (HipsPosition + SpinePosition) / 2, () => (LeftLegUpperPosition + RightLegUpperPosition) / 2));
+            BoneList.Add(Bone.AssociateBoneJoints(Hips, () => (HipsPosition + SpinePosition) / 2, () => (LeftLegHipPosition + RightLegHipPosition) / 2));
 
-            BoneList.Add(Bone.AssociateBoneJoints(RightArmShoulder, () => SpineShoulderPosition, () => RightArmShoulderPosition));
-            BoneList.Add(Bone.AssociateBoneJoints(RightArmUpper, () => RightArmShoulderPosition, () => RightArmLowerPosition));
-            BoneList.Add(Bone.AssociateBoneJoints(RightArmLower, () => RightArmLowerPosition, () => RightArmWristPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(RightArmShoulder, () => SpineShoulderPosition, () => RightCollarBonePosition));
+            BoneList.Add(Bone.AssociateBoneJoints(RightArmUpper, () => RightCollarBonePosition, () => RightArmElbowPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(RightArmLower, () => RightArmElbowPosition, () => RightArmWristPosition));
             BoneList.Add(Bone.AssociateBoneJoints(RightArmHand, () => RightArmWristPosition, () => RightArmHandTipPosition));
 
-            BoneList.Add(Bone.AssociateBoneJoints(RightLegUpper, () => HipsPosition, () => RightLegUpperPosition));
-            BoneList.Add(Bone.AssociateBoneJoints(RightLegLower, () => HipsPosition, () => RightLegLowerPosition));
-            BoneList.Add(Bone.AssociateBoneJoints(RightLegFoot, () => RightLegLowerPosition, () => RightLegFootPosition));
-            BoneList.Add(Bone.AssociateBoneJoints(RightLegToes, () => RightLegFootPosition, () => RightLegToesPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(RightLegUpper, () => HipsPosition, () => RightLegHipPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(RightLegLower, () => HipsPosition, () => RightLegKneePosition));
+            BoneList.Add(Bone.AssociateBoneJoints(RightLegFoot, () => RightLegKneePosition, () => RightLegAnklePosition));
+            BoneList.Add(Bone.AssociateBoneJoints(RightLegToes, () => RightLegAnklePosition, () => RightLegFootPosition));
 
-            BoneList.Add(Bone.AssociateBoneJoints(LeftArmShoulder, () => SpineShoulderPosition, () => LeftArmShoulderPosition));
-            BoneList.Add(Bone.AssociateBoneJoints(LeftArmUpper, () => LeftArmShoulderPosition, () => LeftArmLowerPosition));
-            BoneList.Add(Bone.AssociateBoneJoints(LeftArmLower, () => LeftArmLowerPosition, () => LeftArmWristPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(LeftArmShoulder, () => SpineShoulderPosition, () => LeftCollarBonePosition));
+            BoneList.Add(Bone.AssociateBoneJoints(LeftArmUpper, () => LeftCollarBonePosition, () => LeftArmElbowPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(LeftArmLower, () => LeftArmElbowPosition, () => LeftArmWristPosition));
             BoneList.Add(Bone.AssociateBoneJoints(LeftArmHand, () => LeftArmWristPosition, () => LeftArmHandTipPosition));
 
-            BoneList.Add(Bone.AssociateBoneJoints(LeftLegUpper, () => HipsPosition, () => LeftLegUpperPosition));
-            BoneList.Add(Bone.AssociateBoneJoints(LeftLegLower, () => HipsPosition, () => LeftLegLowerPosition));
-            BoneList.Add(Bone.AssociateBoneJoints(LeftLegFoot, () => LeftLegLowerPosition, () => LeftLegFootPosition));
-            BoneList.Add(Bone.AssociateBoneJoints(LeftLegToes, () => LeftLegFootPosition, () => LeftLegToesPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(LeftLegUpper, () => HipsPosition, () => LeftLegHipPosition));
+            BoneList.Add(Bone.AssociateBoneJoints(LeftLegLower, () => HipsPosition, () => LeftLegKneePosition));
+            BoneList.Add(Bone.AssociateBoneJoints(LeftLegFoot, () => LeftLegKneePosition, () => LeftLegAnklePosition));
+            BoneList.Add(Bone.AssociateBoneJoints(LeftLegToes, () => LeftLegAnklePosition, () => LeftLegToesPosition));
         }
 
         //BoneList.ForEach(x => Bone.Update(x));
@@ -104,30 +104,30 @@ public class AvatarDirectMapping : HumanoidMapping
     public override Vector3 HeadPosition { get; set; }
     public override Vector3 SpineShoulderPosition { get; set; }
     public override Vector3 HipsPosition { get; set; }
-    public override Vector3 LeftArmLowerPosition { get; set; }
+    public override Vector3 LeftArmElbowPosition { get; set; }
+    public override Vector3 LeftCollarBonePosition { get; set; }
     public override Vector3 LeftArmShoulderPosition { get; set; }
-    public override Vector3 LeftArmUpperPosition { get; set; }
     public override Vector3 LeftArmWristPosition { get; set; }
     public override Vector3 LeftArmHandTipPosition { get; set; }
     public override Vector3 LeftArmHandThumbPosition { get; set; }
 
-    public override Vector3 LeftLegFootPosition { get; set; }
-    public override Vector3 LeftLegLowerPosition { get; set; }
+    public override Vector3 LeftLegAnklePosition { get; set; }
+    public override Vector3 LeftLegKneePosition { get; set; }
     public override Vector3 LeftLegToesPosition { get; set; }
-    public override Vector3 LeftLegUpperPosition { get; set; }
+    public override Vector3 LeftLegHipPosition { get; set; }
     public override Vector3 NeckPosition { get; set; }
-    public override Vector3 RightArmLowerPosition { get; set; }
+    public override Vector3 RightArmElbowPosition { get; set; }
+    public override Vector3 RightCollarBonePosition { get; set; }
     public override Vector3 RightArmShoulderPosition { get; set; }
-    public override Vector3 RightArmUpperPosition { get; set; }
     public override Vector3 RightArmWristPosition { get; set; }
 
     public override Vector3 RightArmHandTipPosition { get; set; }
     public override Vector3 RightArmHandThumbPosition { get; set; }
 
+    public override Vector3 RightLegAnklePosition { get; set; }
+    public override Vector3 RightLegKneePosition { get; set; }
     public override Vector3 RightLegFootPosition { get; set; }
-    public override Vector3 RightLegLowerPosition { get; set; }
-    public override Vector3 RightLegToesPosition { get; set; }
-    public override Vector3 RightLegUpperPosition { get; set; }
+    public override Vector3 RightLegHipPosition { get; set; }
     public override Vector3 SpinePosition { get; set; }
     /*
     public override Vector3 ChestPosition
@@ -169,7 +169,7 @@ public class AvatarDirectMapping : HumanoidMapping
         }
     }
 
-    public override Vector3 LeftArmLowerPosition
+    public override Vector3 LeftArmElbowPosition
     {
         get
         {
@@ -182,7 +182,7 @@ public class AvatarDirectMapping : HumanoidMapping
         }
     }
 
-    public override Vector3 LeftArmShoulderPosition
+    public override Vector3 LeftCollarBonePosition
     {
         get
         {
@@ -195,7 +195,7 @@ public class AvatarDirectMapping : HumanoidMapping
         }
     }
 
-    public override Vector3 LeftArmUpperPosition
+    public override Vector3 LeftArmShoulderPosition
     {
         get
         {
@@ -221,7 +221,7 @@ public class AvatarDirectMapping : HumanoidMapping
         }
     }
 
-    public override Vector3 LeftLegFootPosition
+    public override Vector3 LeftLegAnklePosition
     {
         get
         {
@@ -234,7 +234,7 @@ public class AvatarDirectMapping : HumanoidMapping
         }
     }
 
-    public override Vector3 LeftLegLowerPosition
+    public override Vector3 LeftLegKneePosition
     {
         get
         {
@@ -260,7 +260,7 @@ public class AvatarDirectMapping : HumanoidMapping
         }
     }
 
-    public override Vector3 LeftLegUpperPosition
+    public override Vector3 LeftLegHipPosition
     {
         get
         {
@@ -286,7 +286,7 @@ public class AvatarDirectMapping : HumanoidMapping
         }
     }
 
-    public override Vector3 RightArmLowerPosition
+    public override Vector3 RightArmElbowPosition
     {
         get
         {
@@ -299,7 +299,7 @@ public class AvatarDirectMapping : HumanoidMapping
         }
     }
 
-    public override Vector3 RightArmShoulderPosition
+    public override Vector3 RightCollarBonePosition
     {
         get
         {
@@ -312,7 +312,7 @@ public class AvatarDirectMapping : HumanoidMapping
         }
     }
 
-    public override Vector3 RightArmUpperPosition
+    public override Vector3 RightArmShoulderPosition
     {
         get
         {
@@ -338,7 +338,7 @@ public class AvatarDirectMapping : HumanoidMapping
         }
     }
 
-    public override Vector3 RightLegFootPosition
+    public override Vector3 RightLegAnklePosition
     {
         get
         {
@@ -351,7 +351,7 @@ public class AvatarDirectMapping : HumanoidMapping
         }
     }
 
-    public override Vector3 RightLegLowerPosition
+    public override Vector3 RightLegKneePosition
     {
         get
         {
@@ -364,7 +364,7 @@ public class AvatarDirectMapping : HumanoidMapping
         }
     }
 
-    public override Vector3 RightLegToesPosition
+    public override Vector3 RightLegFootPosition
     {
         get
         {
@@ -377,7 +377,7 @@ public class AvatarDirectMapping : HumanoidMapping
         }
     }
     
-    public override Vector3 RightLegUpperPosition
+    public override Vector3 RightLegHipPosition
     {
         get 
         {

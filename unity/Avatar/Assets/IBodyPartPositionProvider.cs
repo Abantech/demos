@@ -12,25 +12,25 @@ using UnityEngine;
         Vector3 HipsPosition  { get; set; }
         Vector3 SpinePosition  { get; set; } 
         Vector3 ChestPosition  { get; set; }
+        Vector3 RightCollarBonePosition  { get; set; }
         Vector3 RightArmShoulderPosition  { get; set; }
-        Vector3 RightArmUpperPosition  { get; set; }
-        Vector3 RightArmLowerPosition  { get; set; }
+        Vector3 RightArmElbowPosition  { get; set; }
         Vector3 RightArmWristPosition  { get; set; }
 
-        Vector3 RightLegUpperPosition  { get; set; }
-        Vector3 RightLegLowerPosition  { get; set; }
+        Vector3 RightLegHipPosition  { get; set; }
+        Vector3 RightLegKneePosition  { get; set; }
+        Vector3 RightLegAnklePosition  { get; set; }
+
         Vector3 RightLegFootPosition  { get; set; }
 
-        Vector3 RightLegToesPosition  { get; set; }
-
+        Vector3 LeftCollarBonePosition  { get; set; }
         Vector3 LeftArmShoulderPosition  { get; set; }
-        Vector3 LeftArmUpperPosition  { get; set; }
-        Vector3 LeftArmLowerPosition  { get; set; }
+        Vector3 LeftArmElbowPosition  { get; set; }
         Vector3 LeftArmWristPosition  { get; set; }
 
-        Vector3 LeftLegUpperPosition  { get; set; }
-        Vector3 LeftLegLowerPosition  { get; set; }
-        Vector3 LeftLegFootPosition  { get; set; }
+        Vector3 LeftLegHipPosition  { get; set; }
+        Vector3 LeftLegKneePosition  { get; set; }
+        Vector3 LeftLegAnklePosition  { get; set; }
         Vector3 LeftLegToesPosition  { get; set; }
 
         //TO DO: Finger joints

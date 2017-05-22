@@ -160,7 +160,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         }
     }
 
-    public override Vector3 RightArmShoulderPosition
+    public override Vector3 RightCollarBonePosition
     {
         get
         {
@@ -172,7 +172,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
             throw new NotImplementedException();
         }
     }
-    public override Vector3 RightArmUpperPosition
+    public override Vector3 RightArmShoulderPosition
     {
         get
         {
@@ -184,7 +184,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
             throw new NotImplementedException();
         }
     }
-    public override Vector3 RightArmLowerPosition
+    public override Vector3 RightArmElbowPosition
     {
         get
         {
@@ -235,7 +235,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         }
     }
 
-    public override Vector3 RightLegUpperPosition
+    public override Vector3 RightLegHipPosition
     {
         get
         {
@@ -247,7 +247,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
             throw new NotImplementedException();
         }
     }
-    public override Vector3 RightLegLowerPosition
+    public override Vector3 RightLegKneePosition
     {
         get
         {
@@ -259,7 +259,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
             throw new NotImplementedException();
         }
     }
-    public override Vector3 RightLegFootPosition
+    public override Vector3 RightLegAnklePosition
     {
         get
         {
@@ -272,7 +272,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         }
     }
 
-    public override Vector3 RightLegToesPosition
+    public override Vector3 RightLegFootPosition
     {
         get
         {
@@ -286,7 +286,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
     }
 
 
-    public override Vector3 LeftArmShoulderPosition
+    public override Vector3 LeftCollarBonePosition
     {
         get
         {
@@ -298,7 +298,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
             throw new NotImplementedException();
         }
     }
-    public override Vector3 LeftArmUpperPosition
+    public override Vector3 LeftArmShoulderPosition
     {
         get
         {
@@ -310,7 +310,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
             throw new NotImplementedException();
         }
     }
-    public override Vector3 LeftArmLowerPosition
+    public override Vector3 LeftArmElbowPosition
     {
         get
         {
@@ -361,7 +361,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         }
     }
 
-    public override Vector3 LeftLegUpperPosition
+    public override Vector3 LeftLegHipPosition
     {
         get
         {
@@ -373,7 +373,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
             throw new NotImplementedException();
         }
     }
-    public override Vector3 LeftLegLowerPosition
+    public override Vector3 LeftLegKneePosition
     {
         get
         {
@@ -385,7 +385,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
             throw new NotImplementedException();
         }
     }
-    public override Vector3 LeftLegFootPosition
+    public override Vector3 LeftLegAnklePosition
     {
         get
         {
