@@ -48,7 +48,21 @@ internal class Bone
         // Set "up" vector to match line between two points
         bone.GetBoneGameObject().transform.up = bone.EndJointPositionGetter() - bone.StartJointPositionGetter();
     }
-    
+
+    public static void UpdateLocation(Bone bone)
+    {
+        //float length = GetBoneLength(bone.StartJointPositionGetter(), bone.EndJointPositionGetter()) / 2;
+
+        // Scale bone along local y to the length between two points
+        //bone.GetBoneGameObject().transform.localScale = new Vector3(bone.GetBoneGameObject().transform.localScale.x, length, bone.GetBoneGameObject().transform.localScale.z);
+
+        // Set position to midpoint
+        bone.GetBoneGameObject().transform.position = GetBoneMidpoint(bone.StartJointPositionGetter(), bone.EndJointPositionGetter());
+
+        // Set "up" vector to match line between two points
+        //bone.GetBoneGameObject().transform.up = bone.EndJointPositionGetter() - bone.StartJointPositionGetter();
+    }
+
     public GameObject GetBoneGameObject()
     {
         return boneGameObject;
