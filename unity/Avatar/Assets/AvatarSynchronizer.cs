@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class AvatarSynchronizer : MonoBehaviour
+public class AvatarSynchronizer : MonoBehaviour, IFPVAdjuster
 {
     //Source 
+    public HumanoidMapping AuthoritativePositionSource;
     public HumanoidMapping MocapDataSource;
     public HumanoidMapping AvatarTarget;
 

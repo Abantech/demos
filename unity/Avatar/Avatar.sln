@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avatar", "Avatar.csproj", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avatar.Editor.Plugins", "Avatar.Editor.Plugins.csproj", "{11473B91-C67D-B114-75AE-9082C3D3ACDC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avatar.Editor", "Avatar.Editor.csproj", "{9719111D-7335-48A6-A27E-BECB53FC562B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{11473B91-C67D-B114-75AE-9082C3D3ACDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11473B91-C67D-B114-75AE-9082C3D3ACDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11473B91-C67D-B114-75AE-9082C3D3ACDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9719111D-7335-48A6-A27E-BECB53FC562B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9719111D-7335-48A6-A27E-BECB53FC562B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9719111D-7335-48A6-A27E-BECB53FC562B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9719111D-7335-48A6-A27E-BECB53FC562B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -35,6 +35,7 @@ class KinectAutoStickMan : IJointPositionUpdater<Windows.Kinect.Joint>
 
     public void UpdateJoints(IEnumerable<Windows.Kinect.Joint> joints)
     {
+        
         foreach (var joint in joints)
         {
             jointCollection[joint.JointType].transform.position = new Vector3(joint.Position.X, joint.Position.Y + 1, joint.Position.Z);
