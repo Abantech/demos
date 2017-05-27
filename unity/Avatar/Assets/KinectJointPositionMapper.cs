@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using Windows.Kinect;
 
-public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyPartPositionProvider
+public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviour, IBodyPartPositionProvider
 {
     Dictionary<JointType, Vector3> LastKnownJointPositions = new Dictionary<JointType, Vector3>();
     ulong trackedBodyId;
@@ -83,18 +83,6 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         return derivedVector;
     }
 
-    public override Vector3 ChestPosition 
-    {
-        get 
-        {
-            return (GetJointPosition(JointType.SpineShoulder) + GetJointPosition(JointType.SpineMid)) / 2;
-        }
-
-        set
-        {
-            throw new NotImplementedException();
-        }
-    }
 
     public override Vector3 HeadPosition
     {
@@ -135,7 +123,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         }
     }
 
-    public override Vector3 SpinePosition
+    public override Vector3 SpineMidPosition
     {
         get
         {
@@ -148,7 +136,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         }
     }
 
-    public override Vector3 HipsPosition
+    public override Vector3 SpineBasePosition
     {
         get
         {
@@ -161,18 +149,6 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         }
     }
 
-    public override Vector3 RightCollarBonePosition
-    {
-        get
-        {
-            return (GetJointPosition(JointType.SpineShoulder) + GetJointPosition(JointType.ShoulderRight)) / 2;
-        }
-
-        set
-        {
-            throw new NotImplementedException();
-        }
-    }
     public override Vector3 RightArmShoulderPosition
     {
         get
@@ -202,6 +178,19 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         get
         {
             return GetJointPosition(JointType.WristRight);
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public override Vector3 RightArmHandPosition
+    {
+        get
+        {
+            return GetJointPosition(JointType.HandRight);
         }
 
         set
@@ -286,19 +275,6 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         }
     }
 
-
-    public override Vector3 LeftCollarBonePosition
-    {
-        get
-        {
-            return (GetJointPosition(JointType.SpineShoulder) + GetJointPosition(JointType.ShoulderLeft)) / 2;
-        }
-
-        set
-        {
-            throw new NotImplementedException();
-        }
-    }
     public override Vector3 LeftArmShoulderPosition
     {
         get
@@ -328,6 +304,19 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         get
         {
             return GetJointPosition(JointType.WristLeft);
+        }
+
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public override Vector3 LeftArmHandPosition
+    {
+        get
+        {
+            return GetJointPosition(JointType.HandLeft);
         }
 
         set
@@ -399,7 +388,7 @@ public class KinectJointPositionMapper : HumanoidMapping //MonoBehaviour, IBodyP
         }
     }
 
-    public override Vector3 LeftLegToesPosition
+    public override Vector3 LeftLegFootPosition
     {
         get
         {

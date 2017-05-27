@@ -35,48 +35,15 @@ public class HMDTranslationProvider : MonoBehaviour, IViewPortTransformProvider
         }
     }
 
-    public Action<Transform> CalibrationFunction
-    {
-        get
-        {
-            throw new NotImplementedException();
-        }
+    public Action<Transform> CalibrationFunction { get; set; }
 
-        set
-        {
-            throw new NotImplementedException();
-        }
-    }
+    public bool IsCalibrated { get; set; }
 
-    public bool IsCalibrated
-    {
-        get
-        {
-            throw new NotImplementedException();
-        }
-
-        set
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public Transform MappedTransform
-    {
-        get
-        {
-            throw new NotImplementedException();
-        }
-
-        set
-        {
-            throw new NotImplementedException();
-        }
-    }
+    public Transform MappedTransform { get; set; }
 
     public void ApplyCalibration()
     {
-        throw new NotImplementedException();
+        CalibrationFunction(MappedTransform);
     }
 }
 

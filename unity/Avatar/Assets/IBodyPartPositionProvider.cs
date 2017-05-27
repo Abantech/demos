@@ -10,9 +10,8 @@ using UnityEngine;
         Vector3 NeckPosition  { get; set; }
     
         Vector3 HipsPosition  { get; set; }
-        Vector3 SpinePosition  { get; set; } 
-        Vector3 ChestPosition  { get; set; }
-        Vector3 RightCollarBonePosition  { get; set; }
+        Vector3 SpineMidPosition  { get; set; } 
+        Vector3 SpineShoulderPosition  { get; set; }
         Vector3 RightArmShoulderPosition  { get; set; }
         Vector3 RightArmElbowPosition  { get; set; }
         Vector3 RightArmWristPosition  { get; set; }
@@ -23,7 +22,6 @@ using UnityEngine;
 
         Vector3 RightLegFootPosition  { get; set; }
 
-        Vector3 LeftCollarBonePosition  { get; set; }
         Vector3 LeftArmShoulderPosition  { get; set; }
         Vector3 LeftArmElbowPosition  { get; set; }
         Vector3 LeftArmWristPosition  { get; set; }

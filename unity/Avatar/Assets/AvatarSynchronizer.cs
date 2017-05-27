@@ -7,9 +7,9 @@ using UnityEngine;
 public class AvatarSynchronizer : MonoBehaviour, IFPVAdjuster
 {
     //Source 
-    public HumanoidMapping AuthoritativePositionSource;
-    public HumanoidMapping MocapDataSource;
-    public HumanoidMapping AvatarTarget;
+    public BodyJointPositionMapping AuthoritativePositionSource;
+    public BodyJointPositionMapping MocapDataSource;
+    public BodyJointPositionMapping AvatarTarget;
 
     private void Start()
     {
@@ -19,38 +19,36 @@ public class AvatarSynchronizer : MonoBehaviour, IFPVAdjuster
     {
         if (MocapDataSource.IsInitialized && AvatarTarget.IsInitialized)
         {
-            AvatarTarget.ChestPosition = MocapDataSource.ChestPosition;
-            AvatarTarget.SpineShoulderPosition = MocapDataSource.SpineShoulderPosition;
             AvatarTarget.HeadPosition = MocapDataSource.HeadPosition;
-            AvatarTarget.HipsPosition = MocapDataSource.HipsPosition;
+            AvatarTarget.NeckPosition = MocapDataSource.NeckPosition;
+            AvatarTarget.SpineShoulderPosition = MocapDataSource.SpineShoulderPosition;
+            AvatarTarget.SpineMidPosition = MocapDataSource.SpineMidPosition;
+            AvatarTarget.SpineBasePosition = MocapDataSource.SpineBasePosition;
 
-            AvatarTarget.LeftArmElbowPosition = MocapDataSource.LeftArmElbowPosition;
-            AvatarTarget.LeftCollarBonePosition = MocapDataSource.LeftCollarBonePosition;
             AvatarTarget.LeftArmShoulderPosition = MocapDataSource.LeftArmShoulderPosition;
+            AvatarTarget.LeftArmElbowPosition = MocapDataSource.LeftArmElbowPosition;
             AvatarTarget.LeftArmWristPosition = MocapDataSource.LeftArmWristPosition;
+            AvatarTarget.LeftArmHandPosition = MocapDataSource.LeftArmHandPosition;
             AvatarTarget.LeftArmHandTipPosition = MocapDataSource.LeftArmHandTipPosition;
             AvatarTarget.LeftArmHandThumbPosition = MocapDataSource.LeftArmHandThumbPosition;
 
-
-            AvatarTarget.LeftLegAnklePosition = MocapDataSource.LeftLegAnklePosition;
-            AvatarTarget.LeftLegKneePosition = MocapDataSource.LeftLegKneePosition;
-            AvatarTarget.LeftLegToesPosition = MocapDataSource.LeftLegToesPosition;
-            AvatarTarget.LeftLegHipPosition = MocapDataSource.LeftLegHipPosition;
-
-            AvatarTarget.NeckPosition = MocapDataSource.NeckPosition;
-
-            AvatarTarget.RightArmElbowPosition = MocapDataSource.RightArmElbowPosition;
-            AvatarTarget.RightCollarBonePosition = MocapDataSource.RightCollarBonePosition;
             AvatarTarget.RightArmShoulderPosition = MocapDataSource.RightArmShoulderPosition;
+            AvatarTarget.RightArmElbowPosition = MocapDataSource.RightArmElbowPosition;
             AvatarTarget.RightArmWristPosition = MocapDataSource.RightArmWristPosition;
+            AvatarTarget.RightArmHandPosition = MocapDataSource.RightArmHandPosition;
             AvatarTarget.RightArmHandTipPosition = MocapDataSource.RightArmHandTipPosition;
             AvatarTarget.RightArmHandThumbPosition = MocapDataSource.RightArmHandThumbPosition;
+
+            AvatarTarget.LeftLegHipPosition = MocapDataSource.LeftLegHipPosition;
+            AvatarTarget.LeftLegKneePosition = MocapDataSource.LeftLegKneePosition;
+            AvatarTarget.LeftLegAnklePosition = MocapDataSource.LeftLegAnklePosition;
+            AvatarTarget.LeftLegFootPosition = MocapDataSource.LeftLegFootPosition;
 
             AvatarTarget.RightLegAnklePosition = MocapDataSource.RightLegAnklePosition;
             AvatarTarget.RightLegKneePosition = MocapDataSource.RightLegKneePosition;
             AvatarTarget.RightLegFootPosition = MocapDataSource.RightLegFootPosition;
             AvatarTarget.RightLegHipPosition = MocapDataSource.RightLegHipPosition;
-            AvatarTarget.SpinePosition = MocapDataSource.SpinePosition;
+            
         }
     }
 }
