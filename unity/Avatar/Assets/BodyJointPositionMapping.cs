@@ -11,7 +11,7 @@ public abstract class BodyJointPositionMapping : MonoBehaviour //, IBodyPartPosi
         return (vector1 + vector2) / 2;
     }
     
-    public Vector3 GetMappedJoint(HumanJointType jointType)
+    public Vector3 GetMappedJointPosition(HumanJointType jointType)
     {
         switch (jointType)
         {
@@ -78,37 +78,37 @@ public abstract class BodyJointPositionMapping : MonoBehaviour //, IBodyPartPosi
 
     public bool IsInitialized { get; protected set; }
 
-    public virtual Vector3 HeadPosition { get; set; }
-    public virtual Vector3 NeckPosition { get; set; }
-    public virtual Vector3 SpineShoulderPosition { get; set; }
-    public virtual Vector3 SpineMidPosition { get; set; }
-    public virtual Vector3 SpineBasePosition { get; set; }
+    public abstract Vector3 HeadPosition { get; set; }
+    public abstract Vector3 NeckPosition { get; set; }
+    public abstract Vector3 SpineShoulderPosition { get; set; }
+    public abstract Vector3 SpineMidPosition { get; set; }
+    public abstract Vector3 SpineBasePosition { get; set; }
 
     #region Arms Positions
-    public virtual Vector3 LeftArmShoulderPosition { get; set; }
-    public virtual Vector3 LeftArmElbowPosition { get; set; }
-    public virtual Vector3 LeftArmWristPosition { get; set; }
-    public virtual Vector3 LeftArmHandPosition { get; set; }
-    public virtual Vector3 LeftArmHandTipPosition { get; set; }
-    public virtual Vector3 LeftArmHandThumbPosition { get; set; }
+    public abstract Vector3 LeftArmShoulderPosition { get; set; }
+    public abstract Vector3 LeftArmElbowPosition { get; set; }
+    public abstract Vector3 LeftArmWristPosition { get; set; }
+    public abstract Vector3 LeftArmHandPosition { get; set; }
+    public abstract Vector3 LeftArmHandTipPosition { get; set; }
+    public abstract Vector3 LeftArmHandThumbPosition { get; set; }
 
-    public virtual Vector3 RightArmShoulderPosition { get; set; }
-    public virtual Vector3 RightArmElbowPosition { get; set; }
-    public virtual Vector3 RightArmWristPosition { get; set; }
-    public virtual Vector3 RightArmHandPosition { get; set; }
-    public virtual Vector3 RightArmHandTipPosition { get; set; }
-    public virtual Vector3 RightArmHandThumbPosition { get; set; }
+    public abstract Vector3 RightArmShoulderPosition { get; set; }
+    public abstract Vector3 RightArmElbowPosition { get; set; }
+    public abstract Vector3 RightArmWristPosition { get; set; }
+    public abstract Vector3 RightArmHandPosition { get; set; }
+    public abstract Vector3 RightArmHandTipPosition { get; set; }
+    public abstract Vector3 RightArmHandThumbPosition { get; set; }
     #endregion
 
     #region Legs Positions
-    public virtual Vector3 LeftLegHipPosition { get; set; }
-    public virtual Vector3 LeftLegKneePosition { get; set; }
-    public virtual Vector3 LeftLegAnklePosition { get; set; }
-    public virtual Vector3 LeftLegFootPosition { get; set; }
+    public abstract Vector3 LeftLegHipPosition { get; set; }
+    public abstract Vector3 LeftLegKneePosition { get; set; }
+    public abstract Vector3 LeftLegAnklePosition { get; set; }
+    public abstract Vector3 LeftLegFootPosition { get; set; }
 
-    public virtual Vector3 RightLegHipPosition { get; set; }
-    public virtual Vector3 RightLegKneePosition { get; set; }
-    public virtual Vector3 RightLegAnklePosition { get; set; }
-    public virtual Vector3 RightLegFootPosition { get; set; }
+    public abstract Vector3 RightLegHipPosition { get; set; }
+    public abstract Vector3 RightLegKneePosition { get; set; }
+    public abstract Vector3 RightLegAnklePosition { get; set; }
+    public abstract Vector3 RightLegFootPosition { get; set; }
     #endregion
 }

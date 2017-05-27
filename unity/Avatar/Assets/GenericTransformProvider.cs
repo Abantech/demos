@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
-interface IHandTransformProvider : ITransformProvider
+public class GenericTransformProvider : BaseTransformProvider
 {
-    HumanJointType GetHandType();
-}
 
+}

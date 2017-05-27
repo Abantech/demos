@@ -114,10 +114,9 @@ public class AvatarDirectMapping : BodyJointPositionMapping
     public override Vector3 SpineMidPosition { get; set; }
     public override Vector3 SpineBasePosition { get; set; }
 
-    //public override Vector3 HipsPosition { get; set; }
-    public override Vector3 LeftArmElbowPosition { get; set; }
-    
+   
     public override Vector3 LeftArmShoulderPosition { get; set; }
+    public override Vector3 LeftArmElbowPosition { get; set; }
     public override Vector3 LeftArmWristPosition { get; set; }
     public override Vector3 LeftArmHandPosition { get; set; }
     public override Vector3 LeftArmHandTipPosition { get; set; }
@@ -127,6 +126,7 @@ public class AvatarDirectMapping : BodyJointPositionMapping
     public override Vector3 RightArmShoulderPosition { get; set; }
     public override Vector3 RightArmElbowPosition { get; set; }
     public override Vector3 RightArmWristPosition { get; set; }
+    public override Vector3 RightArmHandPosition { get; set; }
     public override Vector3 RightArmHandTipPosition { get; set; }
     public override Vector3 RightArmHandThumbPosition { get; set; }
 

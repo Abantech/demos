@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Behavior to attach to a gameobject that can be the source or target of calibration
 /// </summary>
-public interface ITransformProvider
+interface ITransformProvider
 {
     Transform MappedTransform { get; set; }
     Action<Transform> CalibrationFunction { get; set; }

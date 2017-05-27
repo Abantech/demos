@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class AvatarSynchronizer : MonoBehaviour, IFPVAdjuster
+public class AvatarSynchronizer : MonoBehaviour
 {
     //Source 
     public BodyJointPositionMapping AuthoritativePositionSource;

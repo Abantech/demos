@@ -57,21 +57,35 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
         }
     }
 
+    private Vector3 GetJointType(HumanJointType jointType)
+    {
+        int jointTypeIndex = (int)jointType;
+        JointType kinectJointType = ((JointType)jointTypeIndex);
+        return GetJointPosition(kinectJointType);
+    }
+
     private Vector3 GetJointPosition(JointType jointType)
     {
         
         Vector3 derivedVector = Vector3.zero;
 
-        if (hasTrackedBody && trackedBody.Joints.ContainsKey(jointType))
+        if (hasTrackedBody)
         {
-            derivedVector = new Vector3(trackedBody.Joints[jointType].Position.X, trackedBody.Joints[jointType].Position.Y, trackedBody.Joints[jointType].Position.Z);
-            if (!LastKnownJointPositions.ContainsKey(jointType))
+            if (trackedBody.Joints.ContainsKey(jointType))
             {
-                LastKnownJointPositions.Add(jointType, derivedVector);
+                derivedVector = new Vector3(trackedBody.Joints[jointType].Position.X, trackedBody.Joints[jointType].Position.Y, trackedBody.Joints[jointType].Position.Z);
+                if (!LastKnownJointPositions.ContainsKey(jointType))
+                {
+                    LastKnownJointPositions.Add(jointType, derivedVector);
+                }
+                else
+                {
+                    LastKnownJointPositions[jointType] = derivedVector;
+                }
             }
             else
             {
-                LastKnownJointPositions[jointType] = derivedVector;
+                Debug.LogWarning("Kinect does not have tracked joint of type " + jointType.ToString());
             }
         }
         else if (LastKnownJointPositions.ContainsKey(jointType))
@@ -82,7 +96,6 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
 
         return derivedVector;
     }
-
 
     public override Vector3 HeadPosition
     {

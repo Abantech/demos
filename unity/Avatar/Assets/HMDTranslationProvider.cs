@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class HMDTranslationProvider : MonoBehaviour, IViewPortTransformProvider
+public class HMDTranslationProvider : BaseTransformProvider, IViewPortTransformProvider
 {
     private bool calibratePosition = false;
     private bool calibrateRotation = false;
@@ -41,9 +41,17 @@ public class HMDTranslationProvider : MonoBehaviour, IViewPortTransformProvider
 
     public Transform MappedTransform { get; set; }
 
+    public void Start()
+    {
+        this.MappedTransform = this.transform;
+    }
+
     public void ApplyCalibration()
     {
-        CalibrationFunction(MappedTransform);
+        if((CalibratePosition || CalibrateRotation) && CalibrationFunction != null)
+        {
+            CalibrationFunction(MappedTransform);
+        }
     }
 }
 
