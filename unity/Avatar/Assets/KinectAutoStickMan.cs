@@ -33,6 +33,13 @@ class KinectAutoStickMan : IJointPositionUpdater<Windows.Kinect.Joint>
         CreateBones();
     }
 
+    public GameObject GetJointGameObject(HumanJointType jointType)
+    {
+        int jointTypeIndex = (int)jointType;
+        JointType kinectJointType = ((JointType)jointTypeIndex);
+        return jointCollection[kinectJointType];
+    }
+
     public void UpdateJoints(IEnumerable<Windows.Kinect.Joint> joints)
     {
         

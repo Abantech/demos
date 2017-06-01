@@ -6,11 +6,20 @@ using UnityEngine;
 
 public abstract class BodyJointPositionMapping : MonoBehaviour //, IBodyPartPositionProvider
 {
+
+    public bool IsInitialized { get; protected set; }
+
     public Vector3 GetMidpointPosition(Vector3 vector1, Vector3 vector2)
     {
         return (vector1 + vector2) / 2;
     }
+
+    public static IEnumerable<HumanJointType> GetAllJointTypes()
+    {
+        return Enum.GetValues(typeof(HumanJointType)).Cast<HumanJointType>();
+    }
     
+
     public Vector3 GetMappedJointPosition(HumanJointType jointType)
     {
         switch (jointType)
@@ -76,7 +85,6 @@ public abstract class BodyJointPositionMapping : MonoBehaviour //, IBodyPartPosi
         }
     }
 
-    public bool IsInitialized { get; protected set; }
 
     public abstract Vector3 HeadPosition { get; set; }
     public abstract Vector3 NeckPosition { get; set; }

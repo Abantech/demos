@@ -57,7 +57,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
         }
     }
 
-    private Vector3 GetJointType(HumanJointType jointType)
+    public Vector3 GetJointPosition(HumanJointType jointType)
     {
         int jointTypeIndex = (int)jointType;
         JointType kinectJointType = ((JointType)jointTypeIndex);

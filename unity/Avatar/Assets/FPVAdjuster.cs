@@ -27,7 +27,7 @@ public class FPVAdjuster
         // Apply distances to each point
         
         HeadFromKinect.MappedTransform.position = new Vector3(HeadFromKinect.MappedTransform.position.x + xCorrection, HeadFromKinect.MappedTransform.position.y + yCorrection, HeadFromKinect.MappedTransform.position.z + zCorrection);
-        LeftHandFromKinect.MappedTransform.position = new Vector3(LeftHandFromKinect.MappedTransform.position.x + xCorrection, LeftHandFromKinect.y + yCorrection, LeftHandFromKinect.MappedTransform.position.z + zCorrection);
+        LeftHandFromKinect.MappedTransform.position = new Vector3(LeftHandFromKinect.MappedTransform.position.x + xCorrection, LeftHandFromKinect.MappedTransform.position.y + yCorrection, LeftHandFromKinect.MappedTransform.position.z + zCorrection);
         RightHandFromKinect.MappedTransform.position = new Vector3(RightHandFromKinect.MappedTransform.position.x + xCorrection, RightHandFromKinect.MappedTransform.position.y + yCorrection, RightHandFromKinect.MappedTransform.position.z + zCorrection);
 
         // Find Vectors to match
