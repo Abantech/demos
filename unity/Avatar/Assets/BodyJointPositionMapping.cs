@@ -6,6 +6,7 @@ using UnityEngine;
 
 public abstract class BodyJointPositionMapping : MonoBehaviour //, IBodyPartPositionProvider
 {
+    public Vector3 Offset;
 
     public bool IsInitialized { get; protected set; }
 

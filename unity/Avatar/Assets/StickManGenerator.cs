@@ -8,6 +8,10 @@ public class StickManGenerator : MonoBehaviour
 {
     public BodyJointPositionMapping MoCapDataSource;
 
+    public GenericTransformProvider HeadTransformProvider;
+    public GenericTransformProvider LeftHandTransformProvider;
+    public GenericTransformProvider RightHandTransformProvider;
+
     private Dictionary<HumanJointType, GameObject> jointGameObjects;
     private List<Bone> bones;
     public UnityEngine.Color jointColor = UnityEngine.Color.blue;
@@ -27,6 +31,9 @@ public class StickManGenerator : MonoBehaviour
     {
         if(figureGenerated)
         {
+            //var headPosition = jointGameObjects[HumanJointType.Head].transform.position;
+            MoCapDataSource.Offset = new Vector3(-MoCapDataSource.HeadPosition.x, -MoCapDataSource.HeadPosition.y, -MoCapDataSource.HeadPosition.z);
+
             //Update the joint positions
             foreach (var jointType in BodyJointPositionMapping.GetAllJointTypes())
             {

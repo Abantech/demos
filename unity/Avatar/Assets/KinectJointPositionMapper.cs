@@ -14,7 +14,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
 
     private void Start()
     {
-        
+        Offset = Vector3.zero;
     }
 
     private void Update()
@@ -93,8 +93,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
             derivedVector = LastKnownJointPositions[jointType];
         }
 
-
-        return derivedVector;
+        return derivedVector + Offset;
     }
 
     public override Vector3 HeadPosition
