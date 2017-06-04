@@ -75,9 +75,6 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>Library\UnityAssemblies\Mono.Cecil.dll</HintPath>
-    </Reference>
     <Reference Include="LeapCSharp.NET3.5">
       <HintPath>Assets\Plugins\LeapCSharp.NET3.5.dll</HintPath>
     </Reference>
@@ -91,6 +88,7 @@
   <ItemGroup>
     <Compile Include="Assets\AutoDrawStickFigure.cs" />
     <Compile Include="Assets\AvatarDirectMapping.cs" />
+    <Compile Include="Assets\AvatarGenerator.cs" />
     <Compile Include="Assets\AvatarSynchronizer.cs" />
     <Compile Include="Assets\BaseTransformProvider.cs" />
     <Compile Include="Assets\BodyJointPositionMapping.cs" />
@@ -112,6 +110,7 @@
     <Compile Include="Assets\KinectJointPositionMapper.cs" />
     <Compile Include="Assets\LeftHandTranslationProvider.cs" />
     <Compile Include="Assets\LocalKinectController.cs" />
+    <Compile Include="Assets\PercentSlider.cs" />
     <Compile Include="Assets\RightHandTranslationProvider.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />

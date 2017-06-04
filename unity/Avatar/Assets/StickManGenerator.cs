@@ -2,29 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 
-public class StickManGenerator : MonoBehaviour
+public class StickManGenerator : AvatarGenerator
 {
     public BodyJointPositionMapping MoCapDataSource;
-
-    public GenericTransformProvider HeadTransformProvider;
-    public GenericTransformProvider LeftHandTransformProvider;
-    public GenericTransformProvider RightHandTransformProvider;
+    public GameObject HeadAnchorObject;
+    public UnityEngine.Color jointColor = UnityEngine.Color.blue;
+    [Range(0.0f, 1.0f)]
+    public float jointTransparency = 0.5f;
+    public float jointSize = .1f;
 
     private Dictionary<HumanJointType, GameObject> jointGameObjects;
     private List<Bone> bones;
-    public UnityEngine.Color jointColor = UnityEngine.Color.blue;
-    public float jointSize = .1f;
-
     private bool figureGenerated = false;
-    public Dictionary<HumanJointType, Action<GameObject>> OnJointGeneratedActions;
-    public Dictionary<HumanJointType, Action<GameObject>> OnJointUpdateActions;
+    //public Dictionary<HumanJointType, Action<GameObject>> OnJointGeneratedActions;
+    //public Dictionary<HumanJointType, Action<GameObject>> OnJointUpdateActions;
 
     public void Start()
     {
-        OnJointGeneratedActions = new Dictionary<HumanJointType, Action<GameObject>>();
-        OnJointUpdateActions = new Dictionary<HumanJointType, Action<GameObject>>();
+        jointGameObjects = new Dictionary<HumanJointType, GameObject>();
+        //OnJointGeneratedActions = new Dictionary<HumanJointType, Action<GameObject>>();
+        //OnJointUpdateActions = new Dictionary<HumanJointType, Action<GameObject>>();
     }
 
     public void Update()
@@ -37,12 +37,27 @@ public class StickManGenerator : MonoBehaviour
             //Update the joint positions
             foreach (var jointType in BodyJointPositionMapping.GetAllJointTypes())
             {
-                jointGameObjects[jointType].transform.position = MoCapDataSource.GetMappedJointPosition(jointType);
+                Vector3 newJointPosition = Vector3.zero;
 
-                if (OnJointGeneratedActions.ContainsKey(jointType))
+                if (jointGameObjects.ContainsKey(jointType))
                 {
-                    OnJointGeneratedActions[jointType](jointGameObjects[jointType]);
+                    if(MoCapDataSource.TryGetMappedJointPosition(jointType, out newJointPosition))
+                    {
+                        jointGameObjects[jointType].transform.position = newJointPosition;
+                        jointGameObjects[jointType].GetComponent<Renderer>().material.color = new Color(jointColor.r, jointColor.g, jointColor.b, jointTransparency);
+                    }
+                    else
+                    {
+                        //TODO: interpolate position here?
+                        Debug.LogWarningFormat("No position mapped to joint '{0}'", jointType.ToString());
+                    }
+                    
                 }
+
+                //if (OnJointGeneratedActions.ContainsKey(jointType))
+                //{
+                //    OnJointGeneratedActions[jointType](jointGameObjects[jointType]);
+                //}
             }
         }
         else
@@ -58,19 +73,24 @@ public class StickManGenerator : MonoBehaviour
 
                     //create a new material
                     var materialColored = new Material(Shader.Find("Diffuse"));
-                    materialColored.color = jointColor;
+                    materialColored.color = new Color(jointColor.r, jointColor.g, jointColor.b, jointTransparency);
                     jointGameObject.GetComponent<Renderer>().material = materialColored;
                     jointGameObjects.Add(jointType, jointGameObject);
                 }
 
-                foreach (var jointType in BodyJointPositionMapping.GetAllJointTypes())
+                if (HeadAnchorObject != null)
                 {
-                    //TODO
-                    if (OnJointGeneratedActions.ContainsKey(jointType))
-                    {
-                        OnJointGeneratedActions[jointType](jointGameObjects[jointType]);
-                    }
+                    jointGameObjects[HumanJointType.Head].transform.parent = HeadAnchorObject.transform;
                 }
+
+                //foreach (var jointType in BodyJointPositionMapping.GetAllJointTypes())
+                //{
+                //    //TODO
+                //    if (OnJointGeneratedActions.ContainsKey(jointType))
+                //    {
+                //        OnJointGeneratedActions[jointType](jointGameObjects[jointType]);
+                //    }
+                //}
 
                  bones = new List<Bone>();
 
@@ -138,3 +158,26 @@ public class StickManGenerator : MonoBehaviour
         bones.Add(Bone.Create(jointGameObjects[HumanJointType.AnkleLeft], jointGameObjects[HumanJointType.FootLeft]));
     }
 }
+
+
+//[CustomEditor(typeof(StickManGenerator))]
+//public class StickManGeneratorEditor : Editor
+//{
+//    public override void OnInspectorGUI()
+//    {
+//        StickManGenerator stickManGenerator = (StickManGenerator)target;
+
+//        stickManGenerator.jointTransparency = EditorGUILayout.IntSlider("Transparency", stickManGenerator.jointTransparency, 0, 100);
+
+//        //ProgressBar(stickManGenerator.jointTransparency / 100.0f, "Transparency");
+//    }
+
+//    //// Custom GUILayout progress bar.
+//    //void ProgressBar(float value, string label)
+//    //{
+//    //    // Get a rect for the progress bar using the same margins as a textfield:
+//    //    Rect rect = GUILayoutUtility.GetRect(18, 18, "TextField");
+//    //    EditorGUI.ProgressBar(rect, value, label);
+//    //    EditorGUILayout.Space();
+//    //}
+//}

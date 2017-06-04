@@ -51,8 +51,12 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
                 var trackedBodies = LocalKinectController.GetTrackedBodies();
                 //Get the tracked body we've originally captured
 
-                //Note this can get expensive - figure out a way to avoid reassigning this all the time?
-                trackedBody = trackedBodies.Single(x => x.TrackingId == trackedBodyId);
+                if (trackedBodies != null && trackedBodies.Length > 0)
+                {
+                    //Note this can get expensive - figure out a way to avoid reassigning this all the time?
+                    trackedBody = trackedBodies.Single(x => x.TrackingId == trackedBodyId);
+                }
+                
             }
         }
     }

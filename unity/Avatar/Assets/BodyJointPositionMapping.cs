@@ -19,7 +19,22 @@ public abstract class BodyJointPositionMapping : MonoBehaviour //, IBodyPartPosi
     {
         return Enum.GetValues(typeof(HumanJointType)).Cast<HumanJointType>();
     }
-    
+
+    public virtual bool TryGetMappedJointPosition(HumanJointType jointType, out Vector3 mappedJointPosition)
+    {
+        try
+        {
+            mappedJointPosition = GetMappedJointPosition(jointType);
+            return true;
+        }
+        catch( Exception ex)
+        {
+            mappedJointPosition = Vector3.zero;
+            Debug.LogWarningFormat("Unable to retrieve position for {0}: {1}", jointType.ToString(), ex.Message);
+       }
+
+       return false;
+    }
 
     public Vector3 GetMappedJointPosition(HumanJointType jointType)
     {
@@ -63,7 +78,7 @@ public abstract class BodyJointPositionMapping : MonoBehaviour //, IBodyPartPosi
                 return this.RightArmHandThumbPosition;
 
             case HumanJointType.HipLeft:
-                return this.RightArmHandPosition;
+                return this.RightLegHipPosition;
             case HumanJointType.KneeLeft:
                 return this.LeftLegKneePosition;
             case HumanJointType.AnkleLeft:
@@ -81,7 +96,7 @@ public abstract class BodyJointPositionMapping : MonoBehaviour //, IBodyPartPosi
                 return this.RightLegFootPosition;
 
             default:
-                throw new Exception("Invalid joint type passed");
+                throw new Exception("Unrecognized joint type");
                 break;
         }
     }
