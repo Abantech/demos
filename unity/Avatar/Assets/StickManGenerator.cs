@@ -32,7 +32,7 @@ public class StickManGenerator : AvatarGenerator
         if(figureGenerated)
         {
             //var headPosition = jointGameObjects[HumanJointType.Head].transform.position;
-            MoCapDataSource.Offset = new Vector3(-MoCapDataSource.HeadPosition.x, -MoCapDataSource.HeadPosition.y, -MoCapDataSource.HeadPosition.z);
+            MoCapDataSource.Offset = MoCapDataSource.Offset + new Vector3(-MoCapDataSource.HeadPosition.x, -MoCapDataSource.HeadPosition.y, -MoCapDataSource.HeadPosition.z);
 
             //Update the joint positions
             foreach (var jointType in BodyJointPositionMapping.GetAllJointTypes())
@@ -59,6 +59,11 @@ public class StickManGenerator : AvatarGenerator
                 //    OnJointGeneratedActions[jointType](jointGameObjects[jointType]);
                 //}
             }
+
+            foreach (var bone in bones)
+            {
+                Bone.Update(bone);
+            }
         }
         else
         {
@@ -76,12 +81,13 @@ public class StickManGenerator : AvatarGenerator
                     materialColored.color = new Color(jointColor.r, jointColor.g, jointColor.b, jointTransparency);
                     jointGameObject.GetComponent<Renderer>().material = materialColored;
                     jointGameObjects.Add(jointType, jointGameObject);
+                    jointGameObject.transform.parent = this.transform;
                 }
 
-                if (HeadAnchorObject != null)
-                {
-                    jointGameObjects[HumanJointType.Head].transform.parent = HeadAnchorObject.transform;
-                }
+                //if (HeadAnchorObject != null)
+                //{
+                //    jointGameObjects[HumanJointType.Head].transform.parent = HeadAnchorObject.transform;
+                //}
 
                 //foreach (var jointType in BodyJointPositionMapping.GetAllJointTypes())
                 //{
@@ -95,22 +101,26 @@ public class StickManGenerator : AvatarGenerator
                  bones = new List<Bone>();
 
                 CreateBones();
+                foreach (var bone in bones)
+                {
+                    bone.GetBoneGameObject().transform.parent = this.transform;
+                }
 
                 figureGenerated = true;
             }
         }
     }
 
-    public void LateUpdate()
-    {
-        if (figureGenerated)
-        {
-            foreach (var bone in bones)
-            {
-                Bone.Update(bone);
-            }
-        }
-    }
+    //public void LateUpdate()
+    //{
+    //    if (figureGenerated)
+    //    {
+    //        foreach (var bone in bones)
+    //        {
+    //            Bone.Update(bone);
+    //        }
+    //    }
+    //}
 
     private void CreateBones()
     {
@@ -157,6 +167,7 @@ public class StickManGenerator : AvatarGenerator
         //Ankle Left - Foot Left
         bones.Add(Bone.Create(jointGameObjects[HumanJointType.AnkleLeft], jointGameObjects[HumanJointType.FootLeft]));
     }
+
 }
 
 
