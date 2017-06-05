@@ -47,6 +47,8 @@ public class StickManGenerator : AvatarGenerator
         figHeadPositionZ = 0;
         //OnJointGeneratedActions = new Dictionary<HumanJointType, Action<GameObject>>();
         //OnJointUpdateActions = new Dictionary<HumanJointType, Action<GameObject>>();
+        if (invertMocapX)
+            this.gameObject.transform.parent.position = Vector3.Scale(new Vector3(-1, 1, 1), this.gameObject.transform.parent.position);
     }
 
     private BodyJointPositionMapping MoCapDataSource
@@ -56,9 +58,6 @@ public class StickManGenerator : AvatarGenerator
             return KinectJointPositionMapper.Instance;
         }
     }
-
-
-
 
     public void LateUpdate()
     {
@@ -80,7 +79,7 @@ public class StickManGenerator : AvatarGenerator
             foreach (var jointType in BodyJointPositionMapping.GetAllJointTypes())
             {
                 Vector3 newJointPosition = Vector3.zero;
-
+                //var jointType = HumanJointTypeUtil.OppositeSideJoint(humanjointType);
                 if (jointGameObjects.ContainsKey(jointType))
                 {
                     if(MoCapDataSource.TryGetMappedJointPosition(jointType, out newJointPosition))
@@ -129,9 +128,6 @@ public class StickManGenerator : AvatarGenerator
             }
         }
     }
-
-
-
 
     private Vector3 CalculateStabilizedJointPosition(HumanJointType joint, Vector3 currentPosition)
     {

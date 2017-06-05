@@ -80,8 +80,11 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
 
     public Vector3 GetJointPosition(HumanJointType jointType)
     {
+        //HumanJointTypeUtil.OppositeSideJoint(jointType);
         int jointTypeIndex = (int)jointType;
         JointType kinectJointType = ((JointType)jointTypeIndex);
+        //Vector3 originalPos = GetJointPosition(kinectJointType);
+        //return Vector3.Scale(new Vector3(-1, 1, 1), originalPos);
         return GetJointPosition(kinectJointType);
     }
 

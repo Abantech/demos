@@ -34,3 +34,23 @@ public enum HumanJointType : int
     HandTipRight = 23,
     ThumbRight = 24,
 }
+
+public static class HumanJointTypeUtil
+{
+    public static HumanJointType OppositeSideJoint(HumanJointType joint)
+    {
+        string jointName = joint.ToString();
+        if (jointName.Contains("Right"))
+        {
+            string oppositeJointName = jointName.Replace("Right", "Left");
+            return (HumanJointType)System.Enum.Parse(typeof(HumanJointType), oppositeJointName);
+        }
+        else if (jointName.Contains("Left"))
+        {
+            string oppositeJointName = jointName.Replace("Left", "Right");
+            return (HumanJointType)System.Enum.Parse(typeof(HumanJointType), oppositeJointName);
+        }
+
+        return joint;
+    }
+}
