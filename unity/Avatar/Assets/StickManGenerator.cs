@@ -16,6 +16,11 @@ public class StickManGenerator : AvatarGenerator
     private List<Bone> bones;
     private bool figureGenerated = false;
 
+    //Use this to find the stabilized position of joints
+    private Dictionary<HumanJointType, List<Vector3>> JointPositionsLog;
+    //Defines how many entries are stored for a given joint before it is removed
+    public int JointPositionsMaxLogCount = 60; 
+
     public float hmdHeadPositionX;
     public float hmdHeadPositionY;
     public float hmdHeadPositionZ;
@@ -55,7 +60,7 @@ public class StickManGenerator : AvatarGenerator
 
 
 
-    public void Update()
+    public void LateUpdate()
     {
         hmdHeadPositionX = HeadAnchorObject.transform.position.x;
         hmdHeadPositionY = HeadAnchorObject.transform.position.y;
@@ -64,10 +69,12 @@ public class StickManGenerator : AvatarGenerator
         if (figureGenerated)
         {
             var headPosition = jointGameObjects[HumanJointType.Head].transform.position;
-            MoCapDataSource.Offset = MoCapDataSource.Offset + new Vector3(-MoCapDataSource.HeadPosition.x, -MoCapDataSource.HeadPosition.y, -MoCapDataSource.HeadPosition.z);
+            MoCapDataSource.Offset = MoCapDataSource.Offset + new Vector3(-MoCapDataSource.HeadPosition.x, -MoCapDataSource.HeadPosition.y, -MoCapDataSource.HeadPosition.z) + HeadAnchorObject.transform.position;
 
 
             Vector3 mocapCoordinateInversion = new Vector3(invertMocapX ? -1f : 1f, invertMocapY ? -1f : 1f, invertMocapZ ? -1 : 1);
+
+
 
             //Update the joint positions
             foreach (var jointType in BodyJointPositionMapping.GetAllJointTypes())
@@ -78,7 +85,15 @@ public class StickManGenerator : AvatarGenerator
                 {
                     if(MoCapDataSource.TryGetMappedJointPosition(jointType, out newJointPosition))
                     {
-                        Vector3 adjustedPosition = Vector3.Scale(newJointPosition, mocapCoordinateInversion);
+                        Vector3 adjustedPosition = newJointPosition;
+
+                        //This approach flips the axes indiscrimnately
+                        //adjustedPosition = Vector3.Scale(new Vector3(invertMocapX ? -1f : 1f, invertMocapY ? -1f : 1f, invertMocapZ ? -1 : 1), newJointPosition);
+
+                        //This apporach only flips the left and right sides of the body, otherwise even the movement is affected (i.e. toward/away)
+                        //adjustedPosition = invertMocapX && (jointType.ToString().Contains("Left") || jointType.ToString().Contains("Right")) ? Vector3.Scale(newJointPosition, new Vector3(-1, 1, 1)) : newJointPosition;
+                        //adjustedPosition = invertMocapY ? Vector3.Scale(adjustedPosition, new Vector3(1, -1, 1)) : adjustedPosition;
+                        //adjustedPosition = invertMocapZ ? Vector3.Scale(adjustedPosition, new Vector3(1, 1, -1)) : adjustedPosition;
                         jointGameObjects[jointType].transform.position = adjustedPosition;
                     }
                     else
@@ -96,10 +111,11 @@ public class StickManGenerator : AvatarGenerator
             }
 
             bones.ForEach(bone => Bone.Update(bone));
-            figHeadPositionX = jointGameObjects[HumanJointType.Head].transform.position.x;
-            figHeadPositionY = jointGameObjects[HumanJointType.Head].transform.position.y;
-            figHeadPositionZ = jointGameObjects[HumanJointType.Head].transform.position.z;
-            Debug.LogFormat("Avatar Head Position at {0}, {1}, {2}", figHeadPositionX, figHeadPositionY, figHeadPositionZ);
+            //Vector3 stablizedHeadPosition = CalculateStabilizedJointPosition(HumanJointType.Head, jointGameObjects[HumanJointType.Head].transform.position);
+            //figHeadPositionX = stablizedHeadPosition.x;
+            //figHeadPositionY = stablizedHeadPosition.y;
+            //figHeadPositionZ = stablizedHeadPosition.z;
+            //Debug.LogFormat("Avatar Head Position at {0}, {1}, {2}", figHeadPositionX, figHeadPositionY, figHeadPositionZ);
         }
         else
         {
@@ -112,6 +128,31 @@ public class StickManGenerator : AvatarGenerator
                 figureGenerated = true;
             }
         }
+    }
+
+
+
+
+    private Vector3 CalculateStabilizedJointPosition(HumanJointType joint, Vector3 currentPosition)
+    {
+        if (!JointPositionsLog.ContainsKey(joint))
+        {
+            JointPositionsLog[joint] = new List<Vector3>() { currentPosition };
+        }
+       else
+        {
+            JointPositionsLog[joint].Add(currentPosition);
+        }
+        
+        //Remove the oldest logged position if we've exceeded the maximum log count
+        if (JointPositionsLog[joint].Count > JointPositionsMaxLogCount)
+        {
+            JointPositionsLog[joint].RemoveAt(0);
+        }
+
+        //Find the most frequently occuring value
+        Vector3 mostFrequentValue = JointPositionsLog[joint].GroupBy(i => i).OrderByDescending(grp => grp.Count()).Select(grp => grp.Key).First();
+        return mostFrequentValue;
     }
 
     //public void LateUpdate()
@@ -146,7 +187,7 @@ public class StickManGenerator : AvatarGenerator
                 Debug.LogWarningFormat("Create joint '{0}' Failed. Error: {1}, Message: {2}", currentJointName, ex.GetType().Name, ex.Message);
             }
         }
-
+        JointPositionsLog = new Dictionary<HumanJointType, List<Vector3>>();
     }
 
     private void CreateBones()
