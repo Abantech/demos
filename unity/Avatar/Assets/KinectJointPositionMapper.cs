@@ -8,19 +8,34 @@ using Windows.Kinect;
 public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviour, IBodyPartPositionProvider
 {
     Dictionary<JointType, Vector3> LastKnownJointPositions = new Dictionary<JointType, Vector3>();
+    Dictionary<JointType, Vector3> SmoothedJointPositions = new Dictionary<JointType, Vector3>();
     ulong trackedBodyId;
     bool hasTrackedBody = false;
     private Windows.Kinect.Body trackedBody;
-    public bool flipHorizontal = true;
+    private KinectJointFilter positionSmoothingfilter;
+
+    static KinectJointPositionMapper currentInstance;
+
+    public static BodyJointPositionMapping Instance
+    {
+        get
+        {
+            return currentInstance;
+        }
+    }
+
 
     private void Start()
     {
         Offset = Vector3.zero;
+        positionSmoothingfilter = new KinectJointFilter();
+        positionSmoothingfilter.Init();
     }
 
     private void Update()
     {
         this.IsInitialized = LocalKinectController.IsInitialized;
+        currentInstance = this;
 
         if (this.IsInitialized)
         {
@@ -37,6 +52,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
                 else
                 {
                     //TODO: Make sure it's the same tracked body as before. If not, do we stop updating the positions?
+                    positionSmoothingfilter.UpdateFilter(trackedBody);
                 }
             }
             else
@@ -57,7 +73,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
                     //Note this can get expensive - figure out a way to avoid reassigning this all the time?
                     trackedBody = trackedBodies.Single(x => x.TrackingId == trackedBodyId);
                 }
-                
+
             }
         }
     }
@@ -71,22 +87,16 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
 
     private Vector3 GetJointPosition(JointType jointType)
     {
-        
+
         Vector3 derivedVector = Vector3.zero;
 
         if (hasTrackedBody)
         {
-            if (trackedBody.Joints.ContainsKey(jointType))
+            var smoothedJoints = positionSmoothingfilter.GetFilteredJointPositionsMap();
+            if (smoothedJoints.ContainsKey(jointType))
             {
-                derivedVector = new Vector3(trackedBody.Joints[jointType].Position.X, trackedBody.Joints[jointType].Position.Y, trackedBody.Joints[jointType].Position.Z);
-                if (!LastKnownJointPositions.ContainsKey(jointType))
-                {
-                    LastKnownJointPositions.Add(jointType, derivedVector);
-                }
-                else
-                {
-                    LastKnownJointPositions[jointType] = derivedVector;
-                }
+                derivedVector = smoothedJoints[jointType];
+                LastKnownJointPositions[jointType] = derivedVector;
             }
             else
             {
@@ -170,7 +180,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.ShoulderRight) : GetJointPosition(JointType.ShoulderLeft);
+            return GetJointPosition(JointType.ShoulderRight);
         }
 
         set
@@ -182,7 +192,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.ElbowRight) : GetJointPosition(JointType.ElbowLeft);
+            return GetJointPosition(JointType.ElbowRight);
         }
 
         set
@@ -194,7 +204,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.WristRight) : GetJointPosition(JointType.WristLeft);
+            return GetJointPosition(JointType.WristRight);
         }
 
         set
@@ -207,7 +217,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.HandRight) : GetJointPosition(JointType.HandLeft);
+            return GetJointPosition(JointType.HandRight);
         }
 
         set
@@ -220,7 +230,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.HandTipRight) : GetJointPosition(JointType.HandTipLeft);
+            return GetJointPosition(JointType.HandTipRight);
         }
 
         set
@@ -233,7 +243,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.ThumbRight) : GetJointPosition(JointType.ThumbLeft);
+            return GetJointPosition(JointType.ThumbRight);
         }
 
         set
@@ -246,7 +256,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.HipRight) : GetJointPosition(JointType.HipLeft);
+            return GetJointPosition(JointType.HipRight);
         }
 
         set
@@ -258,7 +268,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.KneeRight) : GetJointPosition(JointType.KneeLeft);
+            return GetJointPosition(JointType.KneeRight);
         }
 
         set
@@ -270,7 +280,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.AnkleRight) : GetJointPosition(JointType.AnkleLeft);
+            return GetJointPosition(JointType.AnkleRight);
         }
 
         set
@@ -283,7 +293,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.FootRight) : GetJointPosition(JointType.FootLeft);
+            return GetJointPosition(JointType.FootRight);
         }
 
         set
@@ -296,7 +306,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.ShoulderLeft) : GetJointPosition(JointType.ShoulderRight);
+            return GetJointPosition(JointType.ShoulderLeft);
         }
 
         set
@@ -308,7 +318,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.ElbowLeft) : GetJointPosition(JointType.ElbowRight);
+            return GetJointPosition(JointType.ElbowLeft);
         }
 
         set
@@ -320,7 +330,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.WristLeft) : GetJointPosition(JointType.WristRight);
+            return GetJointPosition(JointType.WristLeft);
         }
 
         set
@@ -333,7 +343,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.HandLeft) : GetJointPosition(JointType.HandRight);
+            return GetJointPosition(JointType.HandLeft);
         }
 
         set
@@ -346,7 +356,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.HandTipLeft) : GetJointPosition(JointType.HandTipRight);
+            return GetJointPosition(JointType.HandTipLeft);
         }
 
         set
@@ -359,7 +369,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.ThumbLeft) : GetJointPosition(JointType.ThumbRight);
+            return GetJointPosition(JointType.ThumbLeft);
         }
 
         set
@@ -372,7 +382,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.HipLeft) : GetJointPosition(JointType.HipRight);
+            return GetJointPosition(JointType.HipLeft);
         }
 
         set
@@ -384,7 +394,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.KneeLeft) : GetJointPosition(JointType.KneeRight);
+            return GetJointPosition(JointType.KneeLeft);
         }
 
         set
@@ -396,7 +406,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.AnkleLeft) : GetJointPosition(JointType.AnkleRight);
+            return GetJointPosition(JointType.AnkleLeft);
         }
 
         set
@@ -409,7 +419,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     {
         get
         {
-            return flipHorizontal ? GetJointPosition(JointType.FootLeft) : GetJointPosition(JointType.FootRight);
+            return GetJointPosition(JointType.FootLeft);
         }
 
         set
