@@ -17,7 +17,7 @@ class KinectAutoStickMan : IJointPositionUpdater<Windows.Kinect.Joint>
 
         foreach (var joint in body.Joints)
         {
-            var jgo = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            var jgo = GameObject.CreatePrimitive(PrimitiveType.Cube);
             jgo.transform.localScale = new Vector3(jointSize, jointSize, jointSize);
             jgo.name = joint.Key.ToString();
 

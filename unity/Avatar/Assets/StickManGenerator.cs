@@ -207,6 +207,8 @@ public class StickManGenerator : AvatarGenerator
                 jointGameObject.GetComponent<Renderer>().material = jointMaterial;
                 jointGameObject.transform.parent = this.transform;
                 jointGameObjects.Add(jointType, jointGameObject);
+                jointGameObject.AddComponent<Rigidbody>().isKinematic = true;
+
             }
             catch (Exception ex)
             {
