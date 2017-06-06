@@ -78,7 +78,7 @@ public abstract class BodyJointPositionMapping : MonoBehaviour //, IBodyPartPosi
                 return this.RightArmHandThumbPosition;
 
             case HumanJointType.HipLeft:
-                return this.RightLegHipPosition;
+                return this.LeftLegHipPosition;
             case HumanJointType.KneeLeft:
                 return this.LeftLegKneePosition;
             case HumanJointType.AnkleLeft:
