@@ -15,6 +15,7 @@ public class StickManGenerator : AvatarGenerator
     private Dictionary<HumanJointType, GameObject> jointGameObjects;
     private List<Bone> bones;
     private bool figureGenerated = false;
+    public GameObject RightHandTracker;
 
     //Use this to find the stabilized position of joints
     private Dictionary<HumanJointType, List<Vector3>> JointPositionsLog;
@@ -33,14 +34,18 @@ public class StickManGenerator : AvatarGenerator
     //Needed to convert counterclockwise rotation into clockwise
     private float invertedDegreeKinectCoordinateRotationCorrection;
 
+    public AudioSource SoundOnHit;
+    public Material CalibrationSphereMaterial;
+    public float CalibrationSphereRadius;
+    private GameObject CalibrationSphere;
 
     //Some Motion Captures do mirror image, adjust these to do the inverse to compensate as required
     public bool invertMocapX;
     public bool invertMocapY;
     public bool invertMocapZ;
 
-    //public Dictionary<HumanJointType, Action<GameObject>> OnJointGeneratedActions;
-    //public Dictionary<HumanJointType, Action<GameObject>> OnJointUpdateActions;
+    private CalibrationManager RightHandCalibrationChecker;
+    private CalibrationManager LeftHandCalibrationChecker;
 
     public void Start()
     {
@@ -48,14 +53,14 @@ public class StickManGenerator : AvatarGenerator
         figHeadPositionX = 0;
         figHeadPositionY = 0;
         figHeadPositionZ = 0;
-        //OnJointGeneratedActions = new Dictionary<HumanJointType, Action<GameObject>>();
-        //OnJointUpdateActions = new Dictionary<HumanJointType, Action<GameObject>>();
 
         // Convert counter clockwise to clockwise
-        invertedDegreeKinectCoordinateRotationCorrection = -kinectCoordinateRotationCorrection;
+        //invertedDegreeKinectCoordinateRotationCorrection = -kinectCoordinateRotationCorrection;
 
         // Rotate all coordinates around the world down vector by the kinect rotation vector to offset kinect rotation
-        this.transform.Rotate(Vector3.down, invertedDegreeKinectCoordinateRotationCorrection, Space.World);
+        //this.transform.Rotate(Vector3.down, invertedDegreeKinectCoordinateRotationCorrection, Space.World);
+        SoundOnHit.Play();
+        //InvokeRepeating("CalibrateRotation", 10.0f, 1.0f);
     }
 
     private BodyJointPositionMapping MoCapDataSource
@@ -66,84 +71,118 @@ public class StickManGenerator : AvatarGenerator
         }
     }
 
-    public void LateUpdate()
+    private Vector3 ZeroOutYCoordinate(Vector3 v)
     {
-        hmdHeadPositionX = HeadAnchorObject.transform.position.x;
-        hmdHeadPositionY = HeadAnchorObject.transform.position.y;
-        hmdHeadPositionZ = HeadAnchorObject.transform.position.z;
+        return new Vector3(v.x, 0, v.z);
+    }
 
+    public float minRotationCorrectionTolerance = 10.0f;
+
+    private void ApplyCalibratedRotation(Vector3 BodyMocapHandPosition, Vector3 HMDPosition, Vector3 otherControllerPosition)
+    {
+        var hmdToMocapDirectionalVector = ZeroOutYCoordinate(BodyMocapHandPosition) - ZeroOutYCoordinate(HMDPosition);
+        var hmdToControllerDirectionalVector = ZeroOutYCoordinate(otherControllerPosition) - ZeroOutYCoordinate(HMDPosition);
+        float mocapCoordinateRotationCorrection = Vector3.Angle(hmdToControllerDirectionalVector, hmdToMocapDirectionalVector);
+        var rotationCorrection = -mocapCoordinateRotationCorrection;
+
+        if (Mathf.Abs(rotationCorrection) >= minRotationCorrectionTolerance)
+        {
+            this.transform.Rotate(Vector3.down, rotationCorrection, Space.World);
+        }
+    }
+
+    private bool uncalibrated = true;
+    private DateTime lastCalibratedTime = DateTime.Now.Subtract(TimeSpan.FromSeconds(10));
+
+    public void Update()
+    {
         if (figureGenerated)
         {
-            var headPosition = jointGameObjects[HumanJointType.Head].transform.position;
-
-            // Convert degrees to rads
-            var rads = Math.PI * invertedDegreeKinectCoordinateRotationCorrection / 180.0;
-
-            // Create x coordinate as a function of the rotation of the kinect
-            var cameraForKinectx = Math.Cos(rads) * HeadAnchorObject.transform.position.x + Math.Sin(rads) * HeadAnchorObject.transform.position.z;
-
-            var cameraForKinecty = HeadAnchorObject.transform.position.y;
-
-            // Create z coordinate as a function of the rotation of the kinect
-            var cameraForKinectz = Math.Sin(rads) * HeadAnchorObject.transform.position.x - Math.Cos(rads) * HeadAnchorObject.transform.position.z;
-
-            // Create offset
-            MoCapDataSource.Offset = MoCapDataSource.Offset + Vector3.Scale(new Vector3(-1, -1, -1), MoCapDataSource.HeadPosition) + new Vector3((float)cameraForKinectx, cameraForKinecty, (float)cameraForKinectz);
-
-            //Update the joint positions
-            foreach (var jointType in BodyJointPositionMapping.GetAllJointTypes())
+            UpdateJointPositions();
+            this.transform.position = HeadAnchorObject.transform.position;
+            if (RightHandTracker != null)
             {
-                Vector3 newJointPosition = Vector3.zero;
-                //var jointType = HumanJointTypeUtil.OppositeSideJoint(humanjointType);
-                if (jointGameObjects.ContainsKey(jointType))
+                if (RightHandCalibrationChecker == null)
                 {
-                    if (MoCapDataSource.TryGetMappedJointPosition(jointType, out newJointPosition))
-                    {
-                        Vector3 adjustedPosition = newJointPosition;
-
-                        //This approach flips the axes indiscrimnately
-                        adjustedPosition = Vector3.Scale(new Vector3(invertMocapX ? -1f : 1f, invertMocapY ? -1f : 1f, invertMocapZ ? -1 : 1), newJointPosition);
-
-                        //This apporach only flips the left and right sides of the body, otherwise even the movement is affected (i.e. toward/away)
-                        //adjustedPosition = invertMocapX && (jointType.ToString().Contains("Left") || jointType.ToString().Contains("Right")) ? Vector3.Scale(newJointPosition, new Vector3(-1, 1, 1)) : newJointPosition;
-                        //adjustedPosition = invertMocapY ? Vector3.Scale(adjustedPosition, new Vector3(1, -1, 1)) : adjustedPosition;
-                        //adjustedPosition = invertMocapZ ? Vector3.Scale(adjustedPosition, new Vector3(1, 1, -1)) : adjustedPosition;
-
-                        // Use local position so container rotation is applied to all child joints
-                        jointGameObjects[jointType].transform.localPosition = adjustedPosition;
-                    }
-                    else
-                    {
-                        //TODO: interpolate position here?
-                        Debug.LogWarningFormat("No position mapped to joint '{0}'", jointType.ToString());
-                    }
-
+                    RightHandCalibrationChecker = new CalibrationManager(RightHandTracker, jointGameObjects[HumanJointType.HandRight], CalibrationSphereRadius, () => { uncalibrated = false; lastCalibratedTime = DateTime.Now; SoundOnHit.Play(); }, () => uncalibrated = true);
                 }
 
-                //if (OnJointGeneratedActions.ContainsKey(jointType))
-                //{
-                //    OnJointGeneratedActions[jointType](jointGameObjects[jointType]);
-                //}
+                //Only do this if currently uncalibrated and if graater than threshold calibration time
+                if (uncalibrated && ((DateTime.Now - lastCalibratedTime).TotalSeconds > 10))
+                {
+                    ApplyCalibratedRotation(jointGameObjects[HumanJointType.HandRight].transform.position, HeadAnchorObject.transform.position, RightHandTracker.transform.position);
+                }
             }
-
-            bones.ForEach(bone => Bone.Update(bone));
-            //Vector3 stablizedHeadPosition = CalculateStabilizedJointPosition(HumanJointType.Head, jointGameObjects[HumanJointType.Head].transform.position);
-            //figHeadPositionX = stablizedHeadPosition.x;
-            //figHeadPositionY = stablizedHeadPosition.y;
-            //figHeadPositionZ = stablizedHeadPosition.z;
-            //Debug.LogFormat("Avatar Head Position at {0}, {1}, {2}", figHeadPositionX, figHeadPositionY, figHeadPositionZ);
         }
         else
         {
-            if (MoCapDataSource != null && MoCapDataSource.IsInitialized)
+            if (MoCapDataSource != null && MoCapDataSource.IsInitialized && MoCapDataSource.IsTrackingHuman)
             {
                 CreateJoints();
                 //Create joints and bones for the first time
                 CreateBones();
                 bones.ForEach(bone => Bone.Update(bone));
+                bones.ForEach(bone => Destroy(bone.GetBoneGameObject().GetComponent<Collider>()));
                 figureGenerated = true;
             }
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.LogWarningFormat("Collided with : ", collision.gameObject.name);
+        //collision.
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.LogWarningFormat("Trigger Collided with : ", other.gameObject.name);
+    }
+
+    private void UpdateJointPositions()
+    {
+        var headPosition = jointGameObjects[HumanJointType.Head].transform.position;
+
+        // Convert degrees to rads
+        var rads = Math.PI * invertedDegreeKinectCoordinateRotationCorrection / 180.0;
+
+        // Create x coordinate as a function of the rotation of the kinect
+        var cameraForKinectx = Math.Cos(rads) * HeadAnchorObject.transform.position.x + Math.Sin(rads) * HeadAnchorObject.transform.position.z;
+
+        var cameraForKinecty = HeadAnchorObject.transform.position.y;
+
+        // Create z coordinate as a function of the rotation of the kinect
+        var cameraForKinectz = Math.Sin(rads) * HeadAnchorObject.transform.position.x - Math.Cos(rads) * HeadAnchorObject.transform.position.z;
+
+        // Create offset
+        MoCapDataSource.Offset = MoCapDataSource.Offset + Vector3.Scale(new Vector3(-1, -1, -1), MoCapDataSource.HeadPosition);// + new Vector3((float)cameraForKinectx, cameraForKinecty, (float)cameraForKinectz);
+
+        //Update the joint positions
+        foreach (var jointType in BodyJointPositionMapping.GetAllJointTypes())
+        {
+            Vector3 newJointPosition = Vector3.zero;
+            //var jointType = HumanJointTypeUtil.OppositeSideJoint(humanjointType);
+            if (jointGameObjects.ContainsKey(jointType))
+            {
+                if (MoCapDataSource.TryGetMappedJointPosition(jointType, out newJointPosition))
+                {
+                    Vector3 adjustedPosition = newJointPosition;
+
+                    //This approach flips the axes indiscrimnately
+                    adjustedPosition = Vector3.Scale(new Vector3(invertMocapX ? -1f : 1f, invertMocapY ? -1f : 1f, invertMocapZ ? -1 : 1), newJointPosition);
+
+                    // Use local position so container rotation is applied to all child joints
+                    jointGameObjects[jointType].transform.localPosition = adjustedPosition;
+                }
+                else
+                {
+                    //TODO: interpolate position here?
+                    Debug.LogWarningFormat("No position mapped to joint '{0}'", jointType.ToString());
+                }
+            }
+        }
+
+        bones.ForEach(bone => Bone.Update(bone));
     }
 
     private Vector3 CalculateStabilizedJointPosition(HumanJointType joint, Vector3 currentPosition)
@@ -168,19 +207,9 @@ public class StickManGenerator : AvatarGenerator
         return mostFrequentValue;
     }
 
-    //public void LateUpdate()
-    //{
-    //    if (figureGenerated)
-    //    {
-    //        foreach (var bone in bones)
-    //        {
-    //            Bone.Update(bone);
-    //        }
-    //    }
-    //}
-
     private void CreateJoints()
     {
+
         // Transparent joints so looking down doesn't cause blindness
         HumanJointType[] transparentJoints = { HumanJointType.Head, HumanJointType.Neck, HumanJointType.SpineShoulder};
 
@@ -208,6 +237,8 @@ public class StickManGenerator : AvatarGenerator
                 jointGameObject.transform.parent = this.transform;
                 jointGameObjects.Add(jointType, jointGameObject);
                 jointGameObject.AddComponent<Rigidbody>().isKinematic = true;
+                Destroy(jointGameObject.GetComponent<Collider>());
+                //Destroy(collider);
 
             }
             catch (Exception ex)
@@ -267,26 +298,3 @@ public class StickManGenerator : AvatarGenerator
     }
 
 }
-
-
-//[CustomEditor(typeof(StickManGenerator))]
-//public class StickManGeneratorEditor : Editor
-//{
-//    public override void OnInspectorGUI()
-//    {
-//        StickManGenerator stickManGenerator = (StickManGenerator)target;
-
-//        stickManGenerator.jointTransparency = EditorGUILayout.IntSlider("Transparency", stickManGenerator.jointTransparency, 0, 100);
-
-//        //ProgressBar(stickManGenerator.jointTransparency / 100.0f, "Transparency");
-//    }
-
-//    //// Custom GUILayout progress bar.
-//    //void ProgressBar(float value, string label)
-//    //{
-//    //    // Get a rect for the progress bar using the same margins as a textfield:
-//    //    Rect rect = GUILayoutUtility.GetRect(18, 18, "TextField");
-//    //    EditorGUI.ProgressBar(rect, value, label);
-//    //    EditorGUILayout.Space();
-//    //}
-//}

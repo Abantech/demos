@@ -10,7 +10,6 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
     Dictionary<JointType, Vector3> LastKnownJointPositions = new Dictionary<JointType, Vector3>();
     Dictionary<JointType, Vector3> SmoothedJointPositions = new Dictionary<JointType, Vector3>();
     ulong trackedBodyId;
-    bool hasTrackedBody = false;
     private Windows.Kinect.Body trackedBody;
     private KinectJointFilter positionSmoothingfilter;
 
@@ -30,6 +29,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
         Offset = Vector3.zero;
         positionSmoothingfilter = new KinectJointFilter();
         positionSmoothingfilter.Init();
+        IsTrackingHuman = false;
     }
 
     private void Update()
@@ -44,9 +44,9 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
                 // Get Tracked Bodies
                 var trackedBodies = LocalKinectController.GetTrackedBodies();
 
-                if (!hasTrackedBody)
+                if (!IsTrackingHuman)
                 {
-                    hasTrackedBody = true;
+                    IsTrackingHuman = true;
                     trackedBodyId = trackedBodies.First().TrackingId;
                 }
                 else
@@ -57,13 +57,14 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
             }
             else
             {
-                if (hasTrackedBody)
+                if (IsTrackingHuman)
                 {
                     //TODO: clear the skeleton here
                 }
+                IsTrackingHuman = false;
             }
 
-            if (hasTrackedBody)
+            if (IsTrackingHuman)
             {
                 var trackedBodies = LocalKinectController.GetTrackedBodies();
                 //Get the tracked body we've originally captured
@@ -71,7 +72,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
                 if (trackedBodies != null && trackedBodies.Length > 0)
                 {
                     //Note this can get expensive - figure out a way to avoid reassigning this all the time?
-                    trackedBody = trackedBodies.Single(x => x.TrackingId == trackedBodyId);
+                    trackedBody = trackedBodies.First(x => x.TrackingId == trackedBodyId);
                 }
 
             }
@@ -93,7 +94,7 @@ public class KinectJointPositionMapper : BodyJointPositionMapping //MonoBehaviou
 
         Vector3 derivedVector = Vector3.zero;
 
-        if (hasTrackedBody)
+        if (IsTrackingHuman)
         {
             var smoothedJoints = positionSmoothingfilter.GetFilteredJointPositionsMap();
             if (smoothedJoints.ContainsKey(jointType))

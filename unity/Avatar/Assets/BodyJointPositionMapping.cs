@@ -10,6 +10,8 @@ public abstract class BodyJointPositionMapping : MonoBehaviour //, IBodyPartPosi
 
     public bool IsInitialized { get; protected set; }
 
+    public virtual bool IsTrackingHuman { get; protected set; }
+
     public Vector3 GetMidpointPosition(Vector3 vector1, Vector3 vector2)
     {
         return (vector1 + vector2) / 2;
