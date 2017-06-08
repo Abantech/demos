@@ -22,3 +22,7 @@
 /AEC/
 /unity/**/*.meta
 /unity/Avatar/Assets/SteamVR/InteractionSystem/Longbow/Sounds
+/LeapBroadcaster/*/bin/**/*.*
+/LeapBroadcaster/*/obj/**/*.*
+/LeapBroadcaster/.vs/**/*
+/LeapBroadcaster/packages/**/*.*
