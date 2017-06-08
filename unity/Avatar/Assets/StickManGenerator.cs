@@ -21,14 +21,7 @@ public class StickManGenerator : AvatarGenerator
     private Dictionary<HumanJointType, List<Vector3>> JointPositionsLog;
     //Defines how many entries are stored for a given joint before it is removed
     public int JointPositionsMaxLogCount = 60;
-
-    public float hmdHeadPositionX;
-    public float hmdHeadPositionY;
-    public float hmdHeadPositionZ;
-
-    public float figHeadPositionX;
-    public float figHeadPositionY;
-    public float figHeadPositionZ;
+    public float minRotationCorrectionTolerance = 10.0f;
 
     public float kinectCoordinateRotationCorrection;
     //Needed to convert counterclockwise rotation into clockwise
@@ -38,6 +31,7 @@ public class StickManGenerator : AvatarGenerator
     public Material CalibrationSphereMaterial;
     public float CalibrationSphereRadius;
     private GameObject CalibrationSphere;
+    public double calibrationCheckInterval = Convert.ToDouble(10);
 
     //Some Motion Captures do mirror image, adjust these to do the inverse to compensate as required
     public bool invertMocapX;
@@ -47,20 +41,15 @@ public class StickManGenerator : AvatarGenerator
     private CalibrationManager RightHandCalibrationChecker;
     private CalibrationManager LeftHandCalibrationChecker;
 
+    private bool uncalibrated = true;
+    private DateTime lastCalibratedTime;
+
     public void Start()
     {
         jointGameObjects = new Dictionary<HumanJointType, GameObject>();
-        figHeadPositionX = 0;
-        figHeadPositionY = 0;
-        figHeadPositionZ = 0;
-
+        lastCalibratedTime = DateTime.Now.Add(TimeSpan.FromSeconds(calibrationCheckInterval));
         // Convert counter clockwise to clockwise
-        //invertedDegreeKinectCoordinateRotationCorrection = -kinectCoordinateRotationCorrection;
-
-        // Rotate all coordinates around the world down vector by the kinect rotation vector to offset kinect rotation
-        //this.transform.Rotate(Vector3.down, invertedDegreeKinectCoordinateRotationCorrection, Space.World);
         SoundOnHit.Play();
-        //InvokeRepeating("CalibrateRotation", 10.0f, 1.0f);
     }
 
     private BodyJointPositionMapping MoCapDataSource
@@ -76,8 +65,6 @@ public class StickManGenerator : AvatarGenerator
         return new Vector3(v.x, 0, v.z);
     }
 
-    public float minRotationCorrectionTolerance = 10.0f;
-
     private void ApplyCalibratedRotation(Vector3 BodyMocapHandPosition, Vector3 HMDPosition, Vector3 otherControllerPosition)
     {
         var hmdToMocapDirectionalVector = ZeroOutYCoordinate(BodyMocapHandPosition) - ZeroOutYCoordinate(HMDPosition);
@@ -87,12 +74,12 @@ public class StickManGenerator : AvatarGenerator
 
         if (Mathf.Abs(rotationCorrection) >= minRotationCorrectionTolerance)
         {
+            // Rotate all coordinates around the world down vector by the kinect rotation vector to offset kinect rotation
             this.transform.Rotate(Vector3.down, rotationCorrection, Space.World);
         }
     }
 
-    private bool uncalibrated = true;
-    private DateTime lastCalibratedTime = DateTime.Now.Subtract(TimeSpan.FromSeconds(10));
+
 
     public void Update()
     {
@@ -104,11 +91,11 @@ public class StickManGenerator : AvatarGenerator
             {
                 if (RightHandCalibrationChecker == null)
                 {
-                    RightHandCalibrationChecker = new CalibrationManager(RightHandTracker, jointGameObjects[HumanJointType.HandRight], CalibrationSphereRadius, () => { uncalibrated = false; lastCalibratedTime = DateTime.Now; SoundOnHit.Play(); }, () => uncalibrated = true);
+                    RightHandCalibrationChecker = new CalibrationManager(RightHandTracker, jointGameObjects[HumanJointType.HandRight], CalibrationSphereRadius, () => { uncalibrated = false; lastCalibratedTime = DateTime.Now; }, () => uncalibrated = true);
                 }
 
                 //Only do this if currently uncalibrated and if graater than threshold calibration time
-                if (uncalibrated && ((DateTime.Now - lastCalibratedTime).TotalSeconds > 10))
+                if (uncalibrated && ((DateTime.Now - lastCalibratedTime).TotalSeconds > calibrationCheckInterval))
                 {
                     ApplyCalibratedRotation(jointGameObjects[HumanJointType.HandRight].transform.position, HeadAnchorObject.transform.position, RightHandTracker.transform.position);
                 }
@@ -128,17 +115,6 @@ public class StickManGenerator : AvatarGenerator
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.LogWarningFormat("Collided with : ", collision.gameObject.name);
-        //collision.
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        Debug.LogWarningFormat("Trigger Collided with : ", other.gameObject.name);
-    }
-
     private void UpdateJointPositions()
     {
         var headPosition = jointGameObjects[HumanJointType.Head].transform.position;
@@ -155,7 +131,7 @@ public class StickManGenerator : AvatarGenerator
         var cameraForKinectz = Math.Sin(rads) * HeadAnchorObject.transform.position.x - Math.Cos(rads) * HeadAnchorObject.transform.position.z;
 
         // Create offset
-        MoCapDataSource.Offset = MoCapDataSource.Offset + Vector3.Scale(new Vector3(-1, -1, -1), MoCapDataSource.HeadPosition);// + new Vector3((float)cameraForKinectx, cameraForKinecty, (float)cameraForKinectz);
+        MoCapDataSource.Offset = MoCapDataSource.Offset + Vector3.Scale(new Vector3(-1, -1, -1), MoCapDataSource.HeadPosition);
 
         //Update the joint positions
         foreach (var jointType in BodyJointPositionMapping.GetAllJointTypes())
