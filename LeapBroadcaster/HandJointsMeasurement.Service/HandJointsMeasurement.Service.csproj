@@ -80,6 +80,24 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HandJointsMeasurement.Capture\HandJointsMeasurement.Capture.csproj">
+      <Project>{bbb45461-46a6-423c-af63-2873bc410903}</Project>
+      <Name>HandJointsMeasurement.Capture</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HandJointsMeasurement.Common\HandJointsMeasurement.Common.csproj">
+      <Project>{f7a4d26f-6dfe-444f-8813-ae297bed069d}</Project>
+      <Name>HandJointsMeasurement.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HandJointsMeasurement.Processing\HandJointsMeasurement.Processing.csproj">
+      <Project>{6d67c4e2-9749-4796-9f20-e9317a1b18db}</Project>
+      <Name>HandJointsMeasurement.Processing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HandJointsMeasurement\HandJointsMeasurement.csproj">
+      <Project>{a842c967-b9e7-4d6c-af56-4be2cc435cfe}</Project>
+      <Name>HandJointsMeasurement</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
